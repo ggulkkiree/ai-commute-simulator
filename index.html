@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 출근 시뮬레이터</title>
+  <meta name="description" content="특수학교 전공과 학생을 위한 AI 기반 출근 시뮬레이터">
+  <meta name="theme-color" content="#2E7D32">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/wide_vn.css">
+  <link rel="stylesheet" href="css/route_mission_game.css">
+  <link rel="stylesheet" href="css/ai_plan_game.css">
+  <link rel="stylesheet" href="css/home_game.css">
+</head>
+<body>
+
+  <header id="top-bar" class="top-bar" style="display:none;" role="banner" aria-label="게임 상태 표시">
+    <div class="top-bar__time-row">
+      <div class="top-bar__current-time">
+        <span class="top-bar__label">현재 시간</span>
+        <span id="current-time" class="top-bar__value" aria-live="polite">--:--</span>
+      </div>
+      <div class="top-bar__remaining-time">
+        <span class="top-bar__label">남은 시간</span>
+        <span id="remaining-time" class="top-bar__value" aria-live="polite">120분</span>
+      </div>
+      <div class="top-bar__destination">
+        <span>본앤하이리</span>
+      </div>
+    </div>
+    <div class="top-bar__bag-row">
+      <span class="top-bar__bag-label">출근 준비 가방</span>
+      <div id="bag-checklist" class="top-bar__bag-items" aria-label="준비물 체크리스트"></div>
+    </div>
+  </header>
+
+  <main id="app-container">
+
+    <section id="screen-main" class="screen active" aria-label="학생 선택 화면">
+      <div class="home-sky-deco home-sky-deco--sun" aria-hidden="true">☀</div>
+      <div class="home-sky-deco home-sky-deco--cloud-one" aria-hidden="true"></div>
+      <div class="home-sky-deco home-sky-deco--cloud-two" aria-hidden="true"></div>
+      <div class="home-city" aria-hidden="true"></div>
+      <div class="home-road" aria-hidden="true">
+        <span class="home-bus">🚌</span>
+        <span class="home-bus-stop">BUS</span>
+      </div>
+
+      <header class="home-brand" aria-label="AI 기반 AI 출근 시뮬레이터">
+        <span class="home-brand__badge">AI 기반</span>
+        <h1><strong>AI</strong> <em>출근</em> 시뮬레이터</h1>
+        <p>⭐ 오늘도 출근 성공! ⭐</p>
+      </header>
+
+      <aside class="home-ai-mascot" aria-label="AI 출근 도우미">
+        <div class="home-ai-mascot__bubble"><strong>안녕!</strong><span>AI가 출근을<br>도와줄게!</span></div>
+        <img src="assets/characters/ai-mascot.png" alt="손을 흔드는 AI 출근 도우미 로봇">
+      </aside>
+
+      <section class="home-student-board" aria-labelledby="home-student-title">
+        <h2 id="home-student-title">출근 연습을 할 학생을 선택해주세요! <small>(최대 5명)</small></h2>
+        <div id="student-grid" class="student-grid" role="radiogroup" aria-label="학생 선택"></div>
+      </section>
+
+      <button id="btn-start" class="btn-start btn-start--main" disabled aria-label="출근 시뮬레이션 시작">
+        <span aria-hidden="true">🤖</span>
+        <strong>출근 시작하기</strong>
+        <span class="btn-start__play" aria-hidden="true">▶</span>
+      </button>
+
+      <nav class="home-utility" aria-label="홈 화면 보조 메뉴">
+        <button id="btn-admin" class="btn-admin" aria-label="교사용 관리 화면">⚙️ 설정</button>
+        <button class="home-guide-button" type="button" aria-label="이용 안내">❓ 이용 안내</button>
+      </nav>
+    </section>
+
+    <div id="student-confirm-modal" class="student-confirm-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="student-confirm-title">
+      <div class="student-confirm-card">
+        <p class="student-confirm-kicker">학생 확인</p>
+        <div id="student-confirm-avatar" class="student-confirm-avatar" aria-hidden="true">🧑</div>
+        <h2 id="student-confirm-title"><span id="student-confirm-name"></span> 학생으로 시작할까요?</h2>
+        <div class="student-confirm-info">
+          <div><span>수준</span><strong id="student-confirm-level"></strong></div>
+          <div><span>캐릭터</span><strong id="student-confirm-character"></strong></div>
+        </div>
+        <fieldset class="student-character-picker">
+          <legend>캐릭터를 선택해요</legend>
+          <div class="student-character-picker__options">
+            <button class="student-character-option" type="button" data-character="boy" aria-pressed="false">
+              <span aria-hidden="true">🧑</span><strong>남자 캐릭터</strong>
+            </button>
+            <button class="student-character-option" type="button" data-character="girl" aria-pressed="false">
+              <span aria-hidden="true">👩</span><strong>여자 캐릭터</strong>
+            </button>
+          </div>
+        </fieldset>
+        <div class="student-confirm-actions">
+          <button id="btn-student-confirm-start" class="game-button-primary" type="button">시작하기</button>
+          <button id="btn-student-confirm-back" class="game-button-secondary" type="button">다시 선택</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="screen-duty-intro" class="screen" aria-label="오늘의 직무 소개">
+      <div class="duty-intro-container">
+        <div class="duty-intro__photo-wrapper">
+          <img id="duty-intro-photo" class="duty-intro__photo" src="" alt="본앤하이리 작업장">
+        </div>
+        <h2 class="duty-intro__title">오늘의 직무를 확인해요</h2>
+        <p class="duty-intro__subtitle">본앤하이리에서 나를 기다리고 있어요.</p>
+        <div id="duty-intro-missions" class="duty-intro__missions"></div>
+        <p class="duty-intro__cta">직무를 확인했으면 출근 정보를 보러 가요.</p>
+        <button id="btn-duty-intro-next" class="btn-start" aria-label="출근 정보 확인">
+          출근 정보 확인하기
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-briefing" class="screen" aria-label="AI 출근 정보 화면">
+      <div class="route-mission">
+        <div id="briefing-content-area" class="route-mission__content"></div>
+        <button id="btn-briefing-start" class="route-mission__next" aria-label="AI 출근 계획 입력">
+          출근 정보 입력하기
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-ai-plan" class="screen" aria-label="AI 출근 계획 입력 화면">
+      <div class="ai-plan">
+        <header class="ai-plan__header">
+          <div class="ai-plan__coach" aria-hidden="true">🤖</div>
+          <div>
+            <p>AI 출근 코치</p>
+            <h2>🤖 AI에게 출근 정보를 알려주세요!</h2>
+          </div>
+          <button id="btn-ai-plan-info" class="ai-plan__review" type="button">🗺 출근 정보 다시 보기</button>
+        </header>
+
+        <div id="ai-plan-form-view" class="ai-plan__body">
+          <form id="ai-plan-form" class="ai-plan__form">
+            <div class="ai-plan__field ai-plan__field--time ai-plan__field--orange">
+              <span><i aria-hidden="true">⏰</i>출근 시간</span>
+              <div class="ai-inline-clock" data-inline-clock="ai-work-time">
+                <button type="button" data-clock-part="hour" data-clock-delta="1" aria-label="출근 시간 시 올리기">▲</button>
+                <button type="button" data-clock-part="minute" data-clock-delta="10" aria-label="출근 시간 분 올리기">▲</button>
+                <div class="ai-inline-clock__value" aria-hidden="true">
+                  <output data-clock-output="hour">00</output><span>:</span><output data-clock-output="minute">00</output>
+                </div>
+                <input id="ai-work-time" class="ai-inline-clock__input" type="text" value="00:00" readonly required aria-label="출근 시간">
+                <button type="button" data-clock-part="hour" data-clock-delta="-1" aria-label="출근 시간 시 내리기">▼</button>
+                <button type="button" data-clock-part="minute" data-clock-delta="-10" aria-label="출근 시간 분 내리기">▼</button>
+              </div>
+            </div>
+            <label class="ai-plan__field ai-plan__field--green">
+              <span><i aria-hidden="true">🚌</i>출발 정류장</span>
+              <select id="ai-start-stop" required aria-label="출발 정류장">
+                <option value="">정류장 선택</option>
+                <option value="전주은화학교 방향 정류장">전주은화학교 방향 정류장</option>
+                <option value="반대 방향 정류장">반대 방향 정류장</option>
+              </select>
+            </label>
+            <label class="ai-plan__field ai-plan__field--mint">
+              <span><i aria-hidden="true">🚏</i>도착 정류장</span>
+              <select id="ai-end-stop" required aria-label="도착 정류장">
+                <option value="">정류장 선택</option>
+                <option value="본앤하이리 앞">본앤하이리 앞</option>
+                <option value="완주터미널">완주터미널</option>
+              </select>
+            </label>
+            <label class="ai-plan__field ai-plan__field--lime">
+              <span><i aria-hidden="true">🚌</i>버스 번호</span>
+              <span class="ai-plan__input-unit"><input id="ai-bus-number" type="number" min="1" required aria-label="버스 번호"><em>번</em></span>
+            </label>
+            <div class="ai-plan__field ai-plan__field--time ai-plan__field--blue">
+              <span><i aria-hidden="true">🕒</i>버스 도착 시간</span>
+              <div class="ai-inline-clock" data-inline-clock="ai-bus-time">
+                <button type="button" data-clock-part="hour" data-clock-delta="1" aria-label="버스 도착 시간 시 올리기">▲</button>
+                <button type="button" data-clock-part="minute" data-clock-delta="10" aria-label="버스 도착 시간 분 올리기">▲</button>
+                <div class="ai-inline-clock__value" aria-hidden="true">
+                  <output data-clock-output="hour">00</output><span>:</span><output data-clock-output="minute">00</output>
+                </div>
+                <input id="ai-bus-time" class="ai-inline-clock__input" type="text" value="00:00" readonly required aria-label="버스 도착 시간">
+                <button type="button" data-clock-part="hour" data-clock-delta="-1" aria-label="버스 도착 시간 시 내리기">▼</button>
+                <button type="button" data-clock-part="minute" data-clock-delta="-10" aria-label="버스 도착 시간 분 내리기">▼</button>
+              </div>
+            </div>
+            <label class="ai-plan__field ai-plan__field--purple">
+              <span><i aria-hidden="true">🚌💨</i>버스 이동 시간</span>
+              <span class="ai-plan__input-unit"><input id="ai-bus-ride" type="number" min="0" max="180" required aria-label="버스 타는 시간"><em>분</em></span>
+            </label>
+          </form>
+          <div class="ai-plan__tip ai-plan__tip--automatic">
+            <div class="ai-plan__tip-coach" aria-hidden="true">🤖</div>
+            <strong>AI가 자동으로 계산해요</strong>
+            <div><span>예상 이동 시간</span><b id="ai-tip-total-time">--분</b></div>
+            <div><span>추천 출발 시간</span><b id="ai-tip-departure-time">--:--</b></div>
+            <div><span>필요 버스</span><b id="ai-tip-bus-number">--번</b></div>
+          </div>
+          <footer class="ai-plan__footer">
+            <div id="ai-plan-form-message" class="ai-plan__form-message" role="status" aria-live="polite">
+              출근 정보를 모두 입력해 주세요.
+            </div>
+            <button id="btn-ai-calculate" class="ai-plan__calculate" type="button" disabled>🤖 AI가 계산해주기</button>
+          </footer>
+        </div>
+
+        <div id="ai-plan-thinking" class="ai-plan__thinking" hidden>
+          <div class="ai-plan__brain">🤖</div>
+          <h3>AI가 출근 시간을 계산하고 있어요</h3>
+          <div class="ai-plan__thinking-dots"><i></i><i></i><i></i></div>
+          <p>걷는 시간, 버스 시간, 준비 시간을 차례로 계산해요.</p>
+        </div>
+
+        <div id="ai-plan-result" class="ai-plan__result" hidden></div>
+      </div>
+    </section>
+
+    <div id="ai-route-review-modal" class="ai-route-review" hidden role="dialog" aria-modal="true" aria-labelledby="ai-route-review-title">
+      <div class="ai-route-review__panel">
+        <button id="btn-ai-route-review-x" class="ai-route-review__x" type="button" aria-label="출근 정보 팝업 닫기">×</button>
+        <p>도움 정보</p>
+        <h2 id="ai-route-review-title">오늘의 출근 정보</h2>
+        <div id="ai-route-review-content"></div>
+        <button id="btn-ai-route-review-close" type="button">닫고 계속하기</button>
+      </div>
+    </div>
+
+    <section id="screen-planning" class="screen" aria-label="출근 계획 화면">
+      <div class="planning-container">
+        <h2>출근 계획 세우기</h2>
+        <div class="planning-calc">
+          <button class="btn-calc-option" data-time="15" type="button">샤워 15분</button>
+          <button class="btn-calc-option" data-time="20" type="button">아침밥 20분</button>
+          <button class="btn-calc-option" data-time="5" type="button">양치 5분</button>
+          <div id="total-calc-time">0분</div>
+          <p id="wake-time-hint">출근 시간에 맞춰 준비 시간을 생각해요.</p>
+        </div>
+        <div class="planning-time-options">
+          <button class="btn-time-option" data-time="450" type="button">07:30</button>
+          <button class="btn-time-option" data-time="480" type="button">08:00</button>
+          <button class="btn-time-option" data-time="500" type="button">08:20</button>
+        </div>
+        <div class="planning-bag-area">
+          <div class="draggable-item" draggable="true" data-item="workClothes">작업복</div>
+          <div class="draggable-item" draggable="true" data-item="umbrella">우산</div>
+          <div class="draggable-item" draggable="true" data-item="waterBottle">물병</div>
+          <div id="bag-dropzone" class="bag-dropzone">가방</div>
+        </div>
+        <button id="btn-plan-start" class="btn-start" disabled>계획 완료</button>
+      </div>
+    </section>
+
+    <section id="screen-game" class="screen" aria-label="시나리오 선택 화면">
+      <div class="scenario-container">
+        <img id="scenario-bg-image" class="scenario-bg-image" src="" alt="">
+        <div class="scenario-card">
+          <div class="scenario-card__header">
+            <span id="scenario-phase-badge" class="scenario-phase-badge"></span>
+            <div class="scenario-card__actions">
+              <button id="btn-tts" class="btn-tts" aria-label="읽어주기">🔊</button>
+            </div>
+          </div>
+          <div id="scenario-avatar" class="scenario-avatar"></div>
+          <p id="scenario-text" class="scenario-text"></p>
+          <div id="choices-container" class="choices-container"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-phase-transition" class="screen" aria-label="단계 전환 화면">
+      <div class="phase-transition-container">
+        <div id="phase-icon" class="phase-icon"></div>
+        <h2 id="phase-title"></h2>
+        <p id="phase-message"></p>
+        <button id="btn-phase-continue" class="btn-start">계속하기</button>
+      </div>
+    </section>
+
+    <section id="screen-sleep-transition" class="screen" aria-label="잠자기와 시간 흐름 화면">
+      <div class="alarm-story" data-alarm-story-stage="confirmed">
+        <img id="alarm-story-image" class="alarm-story__scene" src="assets/images/alarm-setting-evening.png" alt="잠옷을 입은 캐릭터가 침대 옆에 있는 저녁 방">
+        <div id="alarm-story-tint" class="alarm-story__tint" aria-hidden="true"></div>
+        <header class="alarm-story__header">
+          <span class="alarm-story__badge">🌙 내일 아침 준비</span>
+          <strong id="alarm-story-clock">22:00</strong>
+        </header>
+        <div class="alarm-story__message" aria-live="polite">
+          <span id="alarm-story-icon" aria-hidden="true">⏰</span>
+          <h2 id="alarm-story-title">알람 설정 완료!</h2>
+          <p id="alarm-story-text">이제 침대로 가서 푹 자요.</p>
+        </div>
+        <div id="alarm-story-progress" class="alarm-story__progress" aria-label="밤에서 아침으로 흐르는 시간">
+          <span>밤</span><i></i><span>새벽</span><i></i><span>아침</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-morning-alarm" class="screen" aria-label="아침 알람 화면">
+      <div class="morning-alarm-game">
+        <img class="morning-alarm-game__scene" src="assets/images/alarm-ringing-morning-clean.png" alt="아침 햇살이 들어오는 방에서 캐릭터가 깨어나는 모습">
+        <div class="morning-alarm-game__shade" aria-hidden="true"></div>
+        <header class="morning-alarm-game__top">
+          <span>☀️ 좋은 아침이에요!</span>
+          <strong id="alarm-ring-time">08:30</strong>
+        </header>
+        <div class="morning-alarm-game__scene-clock" aria-label="설정한 알람 시각">
+          <span>⏰ 알람 시각</span>
+          <strong id="alarm-scene-clock">08:30</strong>
+        </div>
+        <div class="morning-alarm-game__ring" aria-hidden="true">
+          <span>⏰</span>
+          <b>띠리리리!</b>
+        </div>
+        <section class="morning-alarm-game__choice" aria-labelledby="morning-alarm-question">
+          <p>현재 시각 <strong id="alarm-current-time">08:30</strong>입니다.</p>
+          <h2 id="morning-alarm-question">일어날까요?</h2>
+          <div class="alarm-choices">
+            <button id="btn-alarm-wake-now" class="btn-alarm-action btn-alarm-action--wake" type="button">일어나기</button>
+            <button id="btn-alarm-snooze" class="btn-alarm-action btn-alarm-action--snooze" type="button">10분 더 자기</button>
+          </div>
+          <p id="alarm-snooze-feedback" class="morning-alarm-game__feedback" aria-live="polite"></p>
+        </section>
+      </div>
+    </section>
+
+    <section id="screen-morning-prep" class="screen" aria-label="아침 준비 게임 화면">
+      <div class="morning-game">
+        <img id="morning-scene-image" class="morning-game__scene" src="assets/images/morning-room-game-clean.png" alt="잠옷을 입은 캐릭터가 서 있는 아침 방">
+        <div class="morning-game__shade" aria-hidden="true"></div>
+
+        <header class="morning-game__top-hud">
+          <div class="morning-game__mission"><span aria-hidden="true">★</span> 아침 준비 미션</div>
+          <div class="morning-game__clock-card">
+            <span>목표 출근 시간</span>
+            <strong id="morning-target-time-game">10:00</strong>
+          </div>
+          <div class="morning-game__clock-card morning-game__clock-card--current">
+            <span>현재 시간</span>
+            <strong id="morning-current-time-game">08:20</strong>
+          </div>
+          <button id="btn-morning-work-info-game" class="morning-game__hud-button morning-game__hud-button--blue" type="button">💼 출근 정보 보기</button>
+          <button id="btn-morning-help-game" class="morning-game__hud-button morning-game__hud-button--yellow" type="button">❔ 도움말</button>
+        </header>
+
+        <div id="morning-character-sparkles" class="morning-game__sparkles" aria-hidden="true">✦ ✨ ✦</div>
+        <div id="morning-main-bubble" class="morning-game__speech" aria-live="polite">
+          <strong id="morning-main-bubble-title">뭘 할까요?</strong>
+          <span id="morning-main-bubble-text">아침 준비를 해봐요!</span>
+        </div>
+
+        <div id="morning-activity-grid-game" class="morning-game__activities" aria-label="아침 준비 활동 선택">
+          <button class="morning-game__activity morning-game__activity--shower" data-game-activity="shower" type="button">
+            <span class="morning-game__activity-icon">🚿</span><strong>샤워하기</strong><span class="morning-game__done">✓ 완료</span>
+          </button>
+          <button class="morning-game__activity morning-game__activity--eat" data-game-activity="eat" type="button">
+            <span class="morning-game__activity-icon">🥣</span><strong>아침 먹기</strong><span class="morning-game__done">✓ 완료</span>
+          </button>
+          <button class="morning-game__activity morning-game__activity--brush" data-game-activity="brush" type="button">
+            <span class="morning-game__activity-icon">🪥</span><strong>양치하기</strong><span class="morning-game__done">✓ 완료</span>
+          </button>
+          <button class="morning-game__activity morning-game__activity--dress" data-game-activity="dress" type="button">
+            <span class="morning-game__activity-icon">👕</span><strong>옷 입기</strong><span class="morning-game__done">✓ 완료</span>
+          </button>
+          <button class="morning-game__activity morning-game__activity--bag" data-game-activity="bag" type="button">
+            <span class="morning-game__activity-icon">🎒</span><strong>가방 챙기기</strong><span class="morning-game__done">✓ 완료</span>
+          </button>
+        </div>
+
+        <footer class="morning-game__bottom-hud">
+          <div class="morning-game__avatar" aria-hidden="true">🧒🏻</div>
+          <div class="morning-game__hearts" aria-label="하트 3개">❤ ❤ ❤</div>
+          <div class="morning-game__coins"><span aria-hidden="true">★</span> <strong>120</strong></div>
+          <div id="morning-game-guide" class="morning-game__guide">원하는 활동을 선택해보세요!</div>
+          <button id="btn-morning-next-game" class="morning-game__next" type="button" disabled>출근 정보 확인하기</button>
+          <button class="morning-game__round-button" type="button" aria-label="소리">🔊</button>
+          <button class="morning-game__round-button morning-game__round-button--purple" type="button" aria-label="설정">⚙</button>
+        </footer>
+
+        <div id="morning-action-overlay-game" class="morning-game__overlay" hidden aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="screen-morning-prep-legacy" class="screen" aria-label="기존 아침 준비 화면" hidden aria-hidden="true">
+      <div class="morning-prep-fullscreen">
+        <div class="morning-bg-layer">
+          <img id="morning-bg-image" src="assets/images/waking_up.png" alt="아침 방 배경">
+        </div>
+
+        <div class="morning-hud-top">
+          <div id="morning-time-dashboard" class="morning-time-dashboard-wide">
+            <div class="time-block">
+              <span class="label">현재 시간</span>
+              <strong id="morning-current-time">08:00</strong>
+            </div>
+            <div class="time-block">
+              <span class="label">출근 목표</span>
+              <strong id="morning-target-time">09:00</strong>
+            </div>
+            <div class="time-block">
+              <span class="label">상태</span>
+              <strong id="morning-risk-status" class="morning-risk-status--safe">여유 있음</strong>
+            </div>
+          </div>
+
+          <div class="morning-bus-minimap-wide">
+            <div class="morning-bus-info">
+              <span class="morning-bus-next-time">다음 버스 <strong id="morning-bus-time-display">08:00</strong></span>
+              <span id="morning-bus-remaining" class="morning-bus-remaining time-green">도착까지 15분</span>
+            </div>
+            <div class="morning-bus-track" style="position: relative; height: 50px; width: 100%; display: flex; align-items: center;">
+              <svg class="bus-route-svg" viewBox="0 0 1000 50" preserveAspectRatio="none" style="position: absolute; top:0; left:0; width:100%; height:100%;">
+                <path d="M 0 25 Q 125 5 250 25 T 500 25 T 750 25 T 1000 25" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"></path>
+              </svg>
+              <div id="morning-bus-icon" class="morning-bus-icon" style="position: absolute; left: 0; top: 10px; font-size: 1.8rem; z-index: 10; transition: left 1s ease-in-out; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">🚌</div>
+              <div class="morning-bus-stations" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: space-between;">
+                <div class="morning-station" style="align-self: center;"></div>
+                <div class="morning-station" style="align-self: flex-start; margin-top: 10px;"></div>
+                <div class="morning-station" style="align-self: center;"></div>
+                <div class="morning-station" style="align-self: flex-end; margin-bottom: 10px;"></div>
+                <div class="morning-station" style="align-self: center;"></div>
+                <div class="morning-station" style="align-self: flex-start; margin-top: 10px;"></div>
+                <div class="morning-station" style="align-self: center;"></div>
+                <div class="morning-station" style="align-self: flex-end; margin-bottom: 10px;"></div>
+                <div class="morning-station target-station" style="align-self: center; font-size: 1.2rem; background: transparent; border: none; box-shadow: none;">🏢</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="morning-main-area">
+          <div class="morning-stage-panel">
+            <section id="morning-stage-activities" class="morning-stage-view active" aria-label="아침 일상활동">
+              <div class="morning-stage-heading">
+                <div>
+                  <p id="morning-level-guide" class="morning-stage-kicker"></p>
+                  <h2 class="desk-title">아침 일상활동</h2>
+                </div>
+                <p id="morning-recommendation" class="morning-recommendation"></p>
+              </div>
+              <div id="morning-activity-grid" class="morning-activity-grid"></div>
+              <div class="morning-stage-actions">
+                <button id="btn-morning-to-bag" class="btn-morning-next">아침 준비를 마치고 가방 확인</button>
+              </div>
+            </section>
+
+            <section id="morning-stage-bag" class="morning-stage-view" aria-label="출발 전 가방 확인">
+              <div class="morning-stage-heading">
+                <div>
+                  <p class="morning-stage-kicker">출발 전 마지막 확인</p>
+                  <h2 class="desk-title">가방에 필요한 물건이 있나요?</h2>
+                </div>
+                <p id="morning-bag-guide" class="morning-recommendation"></p>
+              </div>
+              <div class="morning-bag-review-layout">
+                <div class="morning-bag-visual">
+                  <img src="assets/images/open_backpack.png" alt="열려 있는 출근 가방">
+                  <strong id="morning-bag-count">0 / 0 확인</strong>
+                </div>
+                <div id="morning-bag-items-list" class="morning-bag-items-list"></div>
+              </div>
+              <div class="morning-stage-actions">
+                <button id="btn-morning-bag-complete" class="btn-morning-next">가방 확인 완료</button>
+              </div>
+            </section>
+
+            <section id="morning-stage-depart" class="morning-stage-view morning-depart-view" aria-label="집 출발">
+              <div class="morning-depart-icon">🏠</div>
+              <h2>준비가 끝났어요.</h2>
+              <p>이제 본앤하이리로 출발해요!</p>
+              <button id="btn-morning-depart" class="btn-morning-depart">출발하기</button>
+            </section>
+          </div>
+        </div>
+
+        <div id="morning-speech-bubble" class="vn-dialog-wrapper" style="display:none; position:absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 80vw; z-index: 300;">
+          <div id="scenario-avatar-morning" class="scenario-avatar vn-avatar">🤖</div>
+          <div class="scenario-card vn-dialog-box" style="margin-bottom: 0;">
+            <div class="vn-dialog-header">
+              <span class="scenario-phase-badge">아침 준비</span>
+              <div class="scenario-card__actions vn-actions">
+                <button id="btn-tts-morning" class="btn-tts" aria-label="읽어주기">🔊</button>
+              </div>
+            </div>
+            <p id="morning-feedback-text" class="scenario-text vn-text"></p>
+          </div>
+        </div>
+
+        <div id="morning-action-overlay" class="morning-action-overlay" style="display:none;">
+          <div class="action-cutscene">
+            <img id="action-cutscene-img" src="" alt="행동 애니메이션" class="action-cutscene-img">
+            <div id="action-cutscene-particle" class="action-cutscene-particle"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="morning-outfit-modal" class="feedback-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="날씨에 맞는 옷 입기">
+      <div class="morning-outfit-card">
+        <button id="btn-outfit-close" class="morning-modal-close" type="button" aria-label="닫기">×</button>
+        <p id="morning-outfit-weather" class="morning-stage-kicker"></p>
+        <h3>어떤 옷을 입을까요?</h3>
+        <div class="morning-outfit-content">
+          <div id="morning-outfit-character" class="morning-outfit-character" aria-label="학생 캐릭터">
+            <span id="morning-outfit-face">🧑</span>
+            <span id="morning-outfit-preview">👕</span>
+          </div>
+          <div id="morning-outfit-options" class="morning-outfit-options"></div>
+        </div>
+        <p id="morning-outfit-feedback" class="morning-outfit-feedback"></p>
+        <button id="btn-outfit-confirm" class="btn-morning-next" type="button" disabled>이 옷으로 입기</button>
+      </div>
+    </div>
+
+    <section id="screen-eve-prep" class="screen" aria-label="전날 준비 화면">
+      <div class="eve-prep-fullscreen">
+        <div class="eve-bg-layer">
+          <img id="eve-bg-image" src="assets/images/waking_up.png" alt="전날 준비 배경" style="filter: brightness(0.4);">
+        </div>
+
+        <div class="eve-hud-top">
+          <h2 class="desk-title" style="color: white; text-shadow: 0 2px 4px black; margin: 20px;">전날 준비</h2>
+        </div>
+
+        <div class="eve-main-area">
+          <div id="eve-phase-bus" class="eve-phase-panel active" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;">
+            <div class="feedback-card eve-bus-info-card" style="background: white; border-radius: 20px; padding: 40px; text-align: center; max-width: 700px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+              <div style="font-size: 3rem; margin-bottom: 20px;">🚌</div>
+              <h3 style="font-size: 1.8rem; margin-bottom: 10px; color: var(--color-primary);">내일 버스 시간 확인</h3>
+              <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 20px;">출근을 위해 버스 시간을 확인합니다.</p>
+              <div id="eve-bus-info-content" class="eve-bus-info-content"></div>
+              <button id="btn-eve-bus-ok" class="btn-start">확인 완료</button>
+            </div>
+          </div>
+
+          <div id="eve-phase-bag" class="eve-phase-panel" style="display: none;">
+            <header class="eve-bag-game__top">
+              <section class="eve-bag-game__mission">
+                <span>🌙 전날 준비</span>
+                <h2>가방 챙기기</h2>
+              </section>
+              <section class="eve-bag-game__hud-card">
+                <span>⏰ 출근 시간</span>
+                <strong id="eve-bag-work-time">10:00</strong>
+              </section>
+              <section class="eve-bag-game__hud-card">
+                <span>🌦 날씨</span>
+                <strong id="eve-bag-weather">맑음</strong>
+              </section>
+              <section class="eve-bag-game__hud-card">
+                <span>🚌 이용 버스</span>
+                <strong id="eve-bag-bus">200번</strong>
+              </section>
+            </header>
+
+            <div class="eve-bag-game__play">
+              <aside class="eve-bag-game__player">
+                <div class="eve-bag-game__speech">
+                  <strong>내일 필요한 걸<br>미리 챙겨볼까요?</strong>
+                  <span id="eve-bag-coach-text">물건을 골라 가방에 넣어요.</span>
+                </div>
+              </aside>
+
+              <main class="eve-bag-game__bag-area">
+                <div class="eve-bag-game__bag-title">
+                  <span>가방</span>
+                  <strong id="eve-bag-packed-count">0개 챙김</strong>
+                </div>
+                <div class="morning-right-bag" id="eve-right-bag">
+                  <div class="bag-dropzone-wrapper">
+                    <div class="bag-dropzone" id="eve-bag-dropzone">
+                      <img src="assets/images/open_backpack.png" alt="열려 있는 가방" class="bag-image" draggable="false">
+                      <div class="bag-items-grid" id="eve-bag-items-grid"></div>
+                    </div>
+                  </div>
+                </div>
+              </main>
+            </div>
+
+            <footer class="eve-bag-game__bottom">
+              <div class="morning-left-desk">
+                <div class="eve-bag-game__items-title">
+                  <strong>챙길 수 있는 물건</strong>
+                  <span>필요한 물건만 골라요!</span>
+                </div>
+                <div class="desk-items-container" id="eve-desk-items">
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="transitCard">
+                  <div class="emoji-icon">💳</div>
+                  <span class="desk-item-label">교통카드</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="phone">
+                  <div class="emoji-icon">📱</div>
+                  <span class="desk-item-label">스마트폰</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="waterBottle">
+                  <img src="assets/images/item_water_bottle.png" alt="물병" draggable="false">
+                  <span class="desk-item-label">물병</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="umbrella" id="eve-item-umbrella">
+                  <img src="assets/images/item_umbrella.png" alt="우산" draggable="false">
+                  <span class="desk-item-label">우산</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="handFan">
+                  <div class="emoji-icon">🪭</div>
+                  <span class="desk-item-label">손선풍기</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="gloves">
+                  <div class="emoji-icon">🧤</div>
+                  <span class="desk-item-label">장갑</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="outerwear" id="eve-item-outerwear">
+                  <div class="emoji-icon">🧥</div>
+                  <span class="desk-item-label">겉옷</span>
+                </div>
+                <div class="desk-item draggable-item eve-item" draggable="true" data-item="mask">
+                  <div class="emoji-icon">😷</div>
+                  <span class="desk-item-label">마스크</span>
+                </div>
+                <div class="desk-item draggable-item trap-item eve-item" draggable="true" data-item="gameConsole" id="eve-item-game">
+                  <div class="emoji-icon">🎮</div>
+                  <span class="desk-item-label">게임기</span>
+                </div>
+                <div class="desk-item draggable-item trap-item eve-item" draggable="true" data-item="snacks" id="eve-item-snack">
+                  <div class="emoji-icon">🍪</div>
+                  <span class="desk-item-label">과자</span>
+                </div>
+                <div class="desk-item draggable-item trap-item eve-item" draggable="true" data-item="toy">
+                  <div class="emoji-icon">🧸</div>
+                  <span class="desk-item-label">장난감</span>
+                </div>
+              </div>
+              </div>
+              <div class="eve-bag-game__bottom-actions">
+                <section class="eve-bag-game__required" aria-labelledby="eve-bag-required-title">
+                  <div>
+                    <span id="eve-bag-required-title">필요한 물건</span>
+                    <strong id="eve-bag-required-count">0 / 0</strong>
+                  </div>
+                  <div id="eve-bag-required-list" class="eve-bag-game__required-list"></div>
+                </section>
+                <div class="eve-bag-game__status" aria-live="polite">
+                  <strong id="eve-bag-status-title">준비 중</strong>
+                  <p id="eve-bag-status-text">필요한 물건을 골라보세요.</p>
+                </div>
+                <button id="btn-eve-bag-done" class="btn-start" type="button" disabled>🎒 가방 다 챙겼어요</button>
+              </div>
+            </footer>
+          </div>
+
+          <div id="eve-phase-bed" class="eve-phase-panel" style="display: none; justify-content: center; align-items: center; width: 100%; height: 100%; position: relative;">
+            <div id="eve-bed-character" style="font-size: 8rem; position: absolute; bottom: 20%; transition: transform 2s ease-out; transform: translateY(100px); opacity: 0;">😴</div>
+            <div id="eve-bed-bubble" style="opacity: 0; transform: translateY(20px); transition: all 0.5s ease; font-size: 1.8rem; padding: 25px 40px; background: white; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: 4px solid var(--color-border); position: absolute; top: 30%; font-weight: bold;">
+              내일 몇 시에 일어날까요?
+            </div>
+          </div>
+
+          <div id="eve-phase-alarm" class="eve-phase-panel" style="display: none; width: 100%; height: 100%;">
+            <img class="eve-alarm-game__scene" src="assets/images/alarm-setting-evening.png" alt="잠옷을 입은 캐릭터가 침대 옆에서 알람 시간을 생각하는 모습">
+            <div class="eve-alarm-game__shade" aria-hidden="true"></div>
+            <header class="eve-alarm-game__header">
+              <span>⭐ 내일 아침 미션</span>
+              <strong>알람을 맞춰요</strong>
+            </header>
+            <div class="eve-alarm-game__speech">
+              <h3>몇 시에 일어날까요?</h3>
+              <p>출근 시간을 생각해서 알람을 맞춰요!</p>
+            </div>
+            <div id="eve-alarm-options" class="eve-alarm-game__controls"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="morning-warning-modal" class="feedback-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="경고창">
+      <div class="feedback-card feedback-card--warning" style="border: 3px solid var(--color-danger); max-width: 400px;">
+        <div class="feedback-card__icon">⚠️</div>
+        <h3 class="feedback-card__title">잠깐 확인해요</h3>
+        <p id="morning-warning-text" class="feedback-card__consequence" style="font-weight: bold; color: var(--color-danger);"></p>
+        <div class="warning-modal-choices" style="display:flex; gap: var(--space-md); margin-top: var(--space-lg); width:100%;">
+          <button id="btn-warning-back" class="btn-next" style="background: var(--color-primary); width:50%;">더 준비할게요</button>
+          <button id="btn-warning-continue" class="btn-next" style="background: var(--color-danger); width:50%;">그냥 출발</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="screen-commute" class="screen" aria-label="출근 이동 화면">
+      <div class="commute-container">
+        <div class="commute-header">
+          <span class="commute-header__icon">🚌</span>
+          <h2 class="commute-header__title">출근길 시간 관리</h2>
+          <p class="commute-header__sub">정류장, 버스, 회사까지 이동해요.</p>
+        </div>
+
+        <div class="commute-dashboard">
+          <div class="commute-dash-item">
+            <span class="commute-dash-label">현재 시간</span>
+            <span id="commute-current-time" class="commute-dash-value">08:00</span>
+          </div>
+          <div class="commute-dash-item">
+            <span class="commute-dash-label">예상 도착</span>
+            <span id="commute-eta-time" class="commute-dash-value">08:50</span>
+          </div>
+          <div class="commute-dash-item">
+            <span class="commute-dash-label">목표 출근</span>
+            <span id="commute-target-time" class="commute-dash-value">10:00</span>
+          </div>
+          <div class="commute-dash-item">
+            <span class="commute-dash-label">남은 시간</span>
+            <span id="commute-remaining-time" class="commute-dash-value">60분</span>
+          </div>
+        </div>
+
+        <div id="commute-warning-banner" class="commute-warning-banner">안전하게 이동할 수 있어요.</div>
+
+        <div class="commute-progress-wrapper">
+          <div class="commute-progress-bar">
+            <div id="commute-progress-fill" class="commute-progress-fill" style="width:0%"></div>
+            <div class="commute-checkpoint" style="left:0%" data-point="집">🏠</div>
+            <div class="commute-checkpoint" style="left:20%" data-point="정류장">🚏</div>
+            <div class="commute-checkpoint" style="left:50%" data-point="버스">🚌</div>
+            <div class="commute-checkpoint" style="left:80%" data-point="하차">🚏</div>
+            <div class="commute-checkpoint" style="left:100%" data-point="회사">🏢</div>
+          </div>
+        </div>
+
+        <div id="commute-feedback" class="commute-feedback" aria-live="polite"></div>
+
+        <div class="commute-status-area">
+          <div id="commute-status-icon" class="commute-status-icon">🏠</div>
+          <h3 id="commute-status-text" class="commute-status-text">집에서 출발할 준비가 되었어요.</h3>
+          <p id="commute-status-desc" class="commute-status-desc">정류장까지 걸어가요.</p>
+        </div>
+
+        <div id="commute-scene" class="commute-scene"></div>
+        <aside class="commute-journey" aria-label="출근 이동 경로">
+          <header class="commute-journey__header">
+            <span>🗺️ 출근 이동 경로</span>
+            <strong id="commute-journey-status">집에서 출발 준비</strong>
+          </header>
+          <div class="commute-journey__world">
+            <div class="commute-journey__sky" aria-hidden="true">☀️　☁️</div>
+            <div class="commute-journey__route" aria-hidden="true">
+              <div class="commute-journey__route-fill"></div>
+              <div id="commute-journey-marker" class="commute-journey__marker">🧑</div>
+            </div>
+            <div class="commute-journey__places">
+              <div class="commute-journey__place" data-journey-point="home">
+                <i aria-hidden="true">🏠</i><strong>우리 집</strong><span>출발</span>
+              </div>
+              <div class="commute-journey__place" data-journey-point="stop">
+                <i aria-hidden="true">🚏</i><strong>정류장</strong><span>버스 확인</span>
+              </div>
+              <div class="commute-journey__place" data-journey-point="bus">
+                <i aria-hidden="true">🚌</i><strong>버스</strong><span>이동 중</span>
+              </div>
+              <div class="commute-journey__place" data-journey-point="work">
+                <i aria-hidden="true">🏢</i><strong>회사</strong><span>도착 목표</span>
+              </div>
+            </div>
+            <div class="commute-journey__road" aria-hidden="true"></div>
+          </div>
+          <footer class="commute-journey__tip">
+            <span>⏱️</span>
+            <strong>시간을 확인하며 이동해요!</strong>
+          </footer>
+        </aside>
+        <div id="commute-actions" class="commute-actions"></div>
+      </div>
+    </section>
+
+    <div id="result-cutscene-overlay" class="result-cutscene-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="결과 전 상황 장면">
+      <div id="result-cutscene-card" class="result-cutscene-card">
+        <p class="result-cutscene-kicker">나의 선택 돌아보기</p>
+        <div id="result-cutscene-icon" class="result-cutscene-icon" aria-hidden="true"></div>
+        <img id="result-cutscene-image" class="result-cutscene-image" src="" alt="">
+        <h2 id="result-cutscene-title"></h2>
+        <p id="result-cutscene-message"></p>
+        <button id="btn-result-cutscene-next" class="btn-result-primary" type="button">결과 확인</button>
+      </div>
+    </div>
+
+    <section id="screen-result" class="screen" aria-label="결과 화면">
+      <div id="result-container" class="result-container-simple">
+        <div class="result-main-card">
+          <div class="result-hero">
+            <div id="result-badge" class="result-badge">
+              <div id="result-badge-icon" class="result-badge__icon" aria-hidden="true"></div>
+              <h2 id="result-badge-title" class="result-badge__title"></h2>
+            </div>
+            <p id="result-reason" class="result-reason"></p>
+            <button id="btn-result-tts" class="result-tts-button" type="button" aria-label="결과 다시 듣기">🔊 다시 듣기</button>
+          </div>
+
+          <div class="result-summary-layout">
+            <img id="result-photo" class="result-photo" src="" alt="결과 장면">
+            <div class="result-feedback-stack">
+              <article class="result-feedback-card result-feedback-card--regret">
+                <span class="result-feedback-label">💭 아쉬운 점</span>
+                <p id="result-primary-problem"></p>
+              </article>
+              <article class="result-feedback-card result-feedback-card--retry">
+                <span class="result-feedback-label">🌱 내일 다시 해볼 점</span>
+                <p id="result-primary-retry"></p>
+              </article>
+            </div>
+          </div>
+
+          <div class="result-key-times">
+            <div><span>출근 시간</span><strong id="result-work-start-time"></strong></div>
+            <div><span>도착 시각</span><strong id="result-arrival-time"></strong></div>
+            <div><span>학생</span><strong id="result-student-name"></strong></div>
+          </div>
+
+          <details class="result-record-details">
+            <summary>선택 기록 간단히 보기</summary>
+            <div class="result-details">
+              <p>알람 시각: <span id="result-alarm-time"></span></p>
+              <p>기상 시각: <span id="result-start-time"></span></p>
+              <p>집 출발: <span id="result-home-departure-time"></span></p>
+              <p>버스 탑승: <span id="result-bus-boarding-time"></span></p>
+              <p>총 소요 시간: <span id="result-total-time"></span></p>
+              <p>준비물: <span id="result-bag-status"></span></p>
+            </div>
+          </details>
+
+          <button id="timeline-toggle" class="btn-next result-log-toggle" type="button" aria-expanded="false">자세한 행동 기록 보기</button>
+          <div id="timeline-list" class="timeline-list"></div>
+
+          <section id="reflection-section" style="display:none;">
+            <div id="reflection-options"></div>
+          </section>
+
+          <section id="ai-analysis-section" style="display:none;">
+            <div id="ai-analysis-content"></div>
+          </section>
+
+          <section id="strategy-card-section" style="display:none;">
+            <div id="strategy-card-content"></div>
+            <button id="btn-print-strategy" type="button">전략 카드 인쇄</button>
+          </section>
+
+          <div class="result-actions">
+            <button id="btn-go-to-duty" class="btn-result-primary" style="display:none;" aria-label="오늘의 직무 하러 가기">오늘의 직무 하러 가기</button>
+            <button id="btn-retry" class="btn-result-secondary" aria-label="다시 하기">다시 하기</button>
+          </div>
+
+          <div class="result-secondary-actions">
+            <button id="btn-go-home" class="btn-home" aria-label="처음으로 가기">처음으로</button>
+          </div>
+          <button id="btn-view-report" class="teacher-corner-button" aria-label="교사용 리포트 열기">👩‍🏫 교사용</button>
+        </div>
+
+      </div>
+    </section>
+
+    <div id="teacher-report-modal" class="teacher-report-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="teacher-report-title">
+      <div class="teacher-report-modal">
+        <div class="teacher-report-header">
+          <div>
+            <p class="teacher-report-kicker">교사용 요약</p>
+            <h2 id="teacher-report-title">출근 시뮬레이션 리포트</h2>
+          </div>
+          <button id="btn-teacher-report-close" class="teacher-report-close" type="button" aria-label="교사용 리포트 닫기">×</button>
+        </div>
+        <div id="teacher-report-content"></div>
+        <button id="btn-teacher-report-detail" class="teacher-report-detail-button" type="button">상세 보고서 보기</button>
+      </div>
+    </div>
+
+    <section id="screen-duty" class="screen" aria-label="직무 수행 화면">
+      <div class="duty-container">
+        <div class="duty-header">
+          <img id="duty-workplace-photo" class="duty-photo" src="" alt="본앤하이리 작업장">
+          <h2 class="duty-header__title">오늘의 직무를 해요</h2>
+        </div>
+        <div id="duty-mission-list" class="duty-mission-list" role="group" aria-label="직무 체크리스트"></div>
+        <div id="duty-complete-overlay" class="duty-complete-overlay" style="display:none;"></div>
+        <button id="btn-duty-done" class="btn-start" disabled aria-label="직무 완료">
+          오늘의 직무 완료
+        </button>
+        <button id="btn-duty-skip" class="btn-home" aria-label="처음으로 가기">
+          처음으로
+        </button>
+      </div>
+    </section>
+
+    <section id="screen-report" class="screen" aria-label="교사용 보고서 화면">
+      <div class="report-container">
+        <div class="admin-header">
+          <h2 class="admin-header__title">교사용 보고서</h2>
+          <button id="btn-report-back" class="btn-back" aria-label="뒤로 가기">뒤로</button>
+        </div>
+
+        <div class="report-tabs" role="tablist" aria-label="보고서 탭">
+          <button id="tab-individual" class="report-tab active" role="tab" aria-selected="true" aria-controls="panel-individual">
+            개별 보고서
+          </button>
+          <button id="tab-summary" class="report-tab" role="tab" aria-selected="false" aria-controls="panel-summary">
+            전체 요약
+          </button>
+        </div>
+
+        <div id="panel-individual" class="report-panel active" role="tabpanel" aria-labelledby="tab-individual">
+          <div id="report-detail" class="report-detail-card"></div>
+        </div>
+
+        <div id="panel-summary" class="report-panel" role="tabpanel" aria-labelledby="tab-summary">
+          <div id="report-summary" class="report-table-wrap"></div>
+        </div>
+
+        <div class="report-actions">
+          <button id="btn-print-report" class="btn-print" aria-label="보고서 인쇄">
+            보고서 인쇄
+          </button>
+          <button id="btn-report-home" class="btn-home" aria-label="처음으로">
+            처음으로
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-admin" class="screen" aria-label="교사용 학생 관리 화면">
+      <div class="admin-container">
+        <div class="admin-header">
+          <h2 class="admin-header__title">학생 관리</h2>
+          <button id="btn-admin-back" class="btn-back" aria-label="뒤로 가기">뒤로</button>
+        </div>
+        <div class="admin-form-card">
+          <h3 class="admin-form-card__title">학생 추가</h3>
+          <input type="text" id="admin-student-name" placeholder="학생 이름" maxlength="20">
+          <button type="button" id="btn-add-student" class="btn-add-student">학생 추가</button>
+        </div>
+        <div id="student-list-container"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="feedback-overlay" class="feedback-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="결과 피드백">
+    <div class="feedback-card">
+      <div id="feedback-icon" class="feedback-card__icon" aria-hidden="true"></div>
+      <h3 id="feedback-title" class="feedback-card__title"></h3>
+      <p id="feedback-consequence" class="feedback-card__consequence"></p>
+      <div id="feedback-time" class="feedback-card__time" style="display:none;"></div>
+      <div id="feedback-bag-item" class="feedback-card__bag-item" style="display:none;"></div>
+      <button id="btn-feedback-next" class="btn-next" aria-label="다음으로">
+        다음으로
+      </button>
+    </div>
+  </div>
+
+  <div id="ai-hint-overlay" class="feedback-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="AI 도움말">
+    <div class="feedback-card feedback-card--ai">
+      <div class="feedback-card__icon">🤖</div>
+      <h3 class="feedback-card__title">AI 도움말</h3>
+      <p id="ai-hint-text" class="feedback-card__consequence"></p>
+      <button id="btn-ai-hint-close" class="btn-next" aria-label="닫기">
+        확인
+      </button>
+    </div>
+  </div>
+
+  <button id="btn-ai-assistant" type="button" style="display:none;">AI 도움말</button>
+
+  <div id="vn-hud" style="display:none;">
+    <span id="vn-hud-clock"></span>
+    <div id="vn-hud-items"></div>
+  </div>
+
+  <script src="js/state.js"></script>
+  <script src="js/students.js"></script>
+  <script src="js/tts.js"></script>
+  <script src="js/scenarios.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/strategy.js"></script>
+  <script src="js/duty.js"></script>
+  <script src="js/report.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/eve-prep.js"></script>
+  <script src="js/alarm-flow.js"></script>
+  <script src="js/morning-prep.js"></script>
+  <script src="js/commute-plan.js"></script>
+  <script src="js/commute.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/timeline.js"></script>
+
+</body>
+</html>

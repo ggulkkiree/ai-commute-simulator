@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#E8EAF6"/>
+  <path d="M 100 400 Q 400 200 700 400 L 700 600 L 100 600 Z" fill="#9FA8DA"/>
+  <text x="400" y="500" font-family="sans-serif" font-size="80" fill="#fff" text-anchor="middle" dominant-baseline="middle">😴</text>
+  <text x="400" y="100" font-family="sans-serif" font-size="32" fill="#3F51B5" text-anchor="middle" font-weight="bold">Sleeping 10 more mins...</text>
+</svg>

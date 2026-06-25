@@ -1,0 +1,14 @@
+# Local backups and generated artifacts
+backups/
+_backups/
+test-results/
+tests/
+tmp/
+
+# A local holding folder created for ignored files
+gitignore/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.log

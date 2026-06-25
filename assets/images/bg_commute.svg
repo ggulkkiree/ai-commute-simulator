@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#E3F2FD"/>
+  <rect x="0" y="400" width="800" height="200" fill="#90CAF9"/>
+  <rect x="300" y="250" width="400" height="150" fill="#64B5F6" rx="20"/>
+  <circle cx="380" cy="400" r="40" fill="#1565C0"/>
+  <circle cx="620" cy="400" r="40" fill="#1565C0"/>
+  <text x="400" y="100" font-family="sans-serif" font-size="28" fill="#1565C0" text-anchor="middle" font-weight="bold">Commuting to Work</text>
+  <text x="500" y="325" font-family="sans-serif" font-size="80" fill="#fff" text-anchor="middle" dominant-baseline="middle">🚌</text>
+  <text x="150" y="300" font-family="sans-serif" font-size="60" fill="#fff" text-anchor="middle" dominant-baseline="middle">🚏</text>
+</svg>
