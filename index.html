@@ -783,35 +783,57 @@
 
     <section id="screen-result" class="screen" aria-label="결과 화면">
       <div id="result-container" class="result-container-simple">
-        <div class="result-main-card">
-          <div class="result-hero">
+        <div class="result-main-card" aria-live="polite">
+          <header class="result-top-hud">
+            <div class="result-home-mark" aria-hidden="true">⌂</div>
+            <div class="result-hud-title"><span aria-hidden="true">★</span> 출근 결과</div>
+            <div class="result-hud-time"><span>목표 출근 시간</span><strong id="result-hud-target-time">--:--</strong></div>
+            <div class="result-hud-time"><span>실제 도착 시간</span><strong id="result-hud-arrival-time">--:--</strong></div>
+          </header>
+
+          <section class="result-hero" aria-labelledby="result-badge-title">
+            <img id="result-photo" class="result-photo" src="" alt="결과 장면">
             <div id="result-badge" class="result-badge">
               <div id="result-badge-icon" class="result-badge__icon" aria-hidden="true"></div>
               <h2 id="result-badge-title" class="result-badge__title"></h2>
             </div>
             <p id="result-reason" class="result-reason"></p>
             <button id="btn-result-tts" class="result-tts-button" type="button" aria-label="결과 다시 듣기">🔊 다시 듣기</button>
-          </div>
+          </section>
 
-          <div class="result-summary-layout">
-            <img id="result-photo" class="result-photo" src="" alt="결과 장면">
-            <div class="result-feedback-stack">
+          <main class="result-board">
+            <section class="result-score-card" aria-label="오늘의 결과">
+              <div class="result-card-ribbon">🏆 오늘의 결과</div>
+              <div id="result-stars" class="result-stars" aria-label="별점"></div>
+              <div class="result-key-times">
+                <div><span>목표 시간</span><strong id="result-work-start-time"></strong></div>
+                <div><span>도착 시간</span><strong id="result-arrival-time"></strong></div>
+                <div><span>결과</span><strong id="result-status-text"></strong></div>
+                <div><span>학생</span><strong id="result-student-name"></strong></div>
+              </div>
+            </section>
+
+            <section class="result-feedback-panel" aria-label="출근 피드백">
+              <div class="result-feedback-grid">
+                <article class="result-feedback-card result-feedback-card--good">
+                  <span class="result-feedback-label">👍 내가 잘한 점</span>
+                  <ul id="result-good-list" class="result-good-list"></ul>
+                </article>
+                <article class="result-feedback-card result-feedback-card--retry">
+                  <span class="result-feedback-label">💡 내일 해볼 점</span>
+                  <p id="result-primary-retry"></p>
+                </article>
+              </div>
               <article class="result-feedback-card result-feedback-card--regret">
                 <span class="result-feedback-label">💭 아쉬운 점</span>
                 <p id="result-primary-problem"></p>
               </article>
-              <article class="result-feedback-card result-feedback-card--retry">
-                <span class="result-feedback-label">🌱 내일 다시 해볼 점</span>
-                <p id="result-primary-retry"></p>
+              <article class="result-teacher-note">
+                <span>📋 선생님 한마디</span>
+                <p id="result-teacher-note">오늘의 출근 과정을 잘 마쳤어요.</p>
               </article>
-            </div>
-          </div>
-
-          <div class="result-key-times">
-            <div><span>출근 시간</span><strong id="result-work-start-time"></strong></div>
-            <div><span>도착 시각</span><strong id="result-arrival-time"></strong></div>
-            <div><span>학생</span><strong id="result-student-name"></strong></div>
-          </div>
+            </section>
+          </main>
 
           <details class="result-record-details">
             <summary>선택 기록 간단히 보기</summary>
@@ -844,12 +866,12 @@
           <div class="result-actions">
             <button id="btn-go-to-duty" class="btn-result-primary" style="display:none;" aria-label="오늘의 직무 하러 가기">오늘의 직무 하러 가기</button>
             <button id="btn-retry" class="btn-result-secondary" aria-label="다시 하기">다시 하기</button>
+            <button id="btn-view-report" class="teacher-corner-button" aria-label="교사용 리포트 열기">📋 교사용 리포트 보기</button>
           </div>
 
           <div class="result-secondary-actions">
             <button id="btn-go-home" class="btn-home" aria-label="처음으로 가기">처음으로</button>
           </div>
-          <button id="btn-view-report" class="teacher-corner-button" aria-label="교사용 리포트 열기">👩‍🏫 교사용</button>
         </div>
 
       </div>
@@ -887,11 +909,20 @@
     </section>
 
     <section id="screen-report" class="screen" aria-label="교사용 보고서 화면">
-      <div class="report-container">
-        <div class="admin-header">
-          <h2 class="admin-header__title">교사용 보고서</h2>
-          <button id="btn-report-back" class="btn-back" aria-label="뒤로 가기">뒤로</button>
-        </div>
+      <div class="report-container report-dashboard-shell">
+        <header class="report-dashboard-header">
+          <button id="btn-report-back" class="btn-back report-back-button" aria-label="이전 화면으로">← 이전 화면으로</button>
+          <div class="report-heading">
+            <h2 class="admin-header__title">교사용 리포트</h2>
+            <p>학생의 출근 과정과 결과를 확인해요</p>
+          </div>
+          <div class="report-header-tools">
+            <span id="report-today-date" class="report-date-chip">오늘 날짜</span>
+            <button id="btn-print-report" class="btn-print report-print-button" aria-label="보고서 인쇄">
+              🖨️ 리포트 인쇄
+            </button>
+          </div>
+        </header>
 
         <div class="report-tabs" role="tablist" aria-label="보고서 탭">
           <button id="tab-individual" class="report-tab active" role="tab" aria-selected="true" aria-controls="panel-individual">
@@ -911,11 +942,11 @@
         </div>
 
         <div class="report-actions">
-          <button id="btn-print-report" class="btn-print" aria-label="보고서 인쇄">
-            보고서 인쇄
+          <button id="btn-report-retry" class="btn-print report-retry-button" aria-label="다시 하기">
+            ↻ 다시 하기
           </button>
-          <button id="btn-report-home" class="btn-home" aria-label="처음으로">
-            처음으로
+          <button id="btn-report-home" class="btn-home" aria-label="학생 선택 화면으로 이동">
+            🏠 학생 선택 화면으로 이동
           </button>
         </div>
       </div>

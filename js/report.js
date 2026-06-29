@@ -194,140 +194,233 @@ function generateDetailReport(state) {
   var commute = state.commute || {};
   var time = state.time || { current: state.startTime || 0, target: getWorkStartTime() };
   var actionLog = Array.isArray(state.actionLog) ? state.actionLog : [];
-  var judgment = getJudgment();
-  var judgmentInfo = _getJudgmentInfo(judgment);
-  var bagItems = getBagItems();
+  var judgment = state.finalJudgment || (typeof normalizeResultJudgment === 'function'
+    ? normalizeResultJudgment(getJudgment())
+    : getJudgment());
   var reqStatus = getRequiredItemsStatus();
-  var readiness = getReadiness();
   var causeList = getCauseAnalysis(actionLog);
+  var primary = state.feedback || {};
+  var status = _getReportStatus(judgment, causeList, reqStatus);
+  var steps = _buildReportTimelineSteps(state, judgment);
+  var completedSteps = steps.filter(function(step) { return step.complete; }).length;
+  var stars = status.stars;
+  var arrivalTime = (time.current !== null && time.current !== undefined) ? time.current : state.currentTime;
+  var startTime = (state.startTime !== null && state.startTime !== undefined) ? state.startTime : commute.wakeTime;
+  var totalMinutes = arrivalTime !== null && arrivalTime !== undefined && startTime !== null && startTime !== undefined
+    ? Math.max(0, arrivalTime - startTime)
+    : null;
+  var avatar = typeof getStudentAvatarPresentation === 'function'
+    ? getStudentAvatarPresentation(student)
+    : null;
+  var avatarHtml = avatar && avatar.src
+    ? '<img src="' + avatar.src + '" alt="' + _escapeHtml(student.name || '학생') + ' 프로필">'
+    : '<span>' + _escapeHtml((avatar && avatar.fallback) || student.emoji || '🙂') + '</span>';
+  var studentId = student.id !== undefined && student.id !== null ? String(student.id) : '-';
+  var gender = student.gender || (student.character === 'girl' ? '여자' : '남자');
+  var goodItems = _buildReportGoodItems(judgment, reqStatus);
+  var retryItems = _buildReportRetryItems(judgment, primary, status);
 
-  var today = new Date();
-  var dateStr = today.getFullYear() + '년 ' +
-    (today.getMonth() + 1) + '월 ' +
-    today.getDate() + '일';
+  return '' +
+    '<div class="teacher-dashboard teacher-dashboard--' + status.key + '">' +
+      '<section class="teacher-dashboard__top">' +
+        '<article class="teacher-student-card">' +
+          '<div class="teacher-student-card__avatar">' + avatarHtml + '</div>' +
+          '<div class="teacher-student-card__info">' +
+            '<h3>' + _escapeHtml(student.name || '학생') + '</h3>' +
+            '<div class="teacher-student-card__chips">' +
+              '<span>수준 <strong>' + _escapeHtml(student.level || '-') + '수준</strong></span>' +
+              '<span>성별 <strong>' + _escapeHtml(gender || '-') + '</strong></span>' +
+              '<span>학생 ID <strong>' + _escapeHtml(studentId) + '</strong></span>' +
+            '</div>' +
+          '</div>' +
+        '</article>' +
+        '<article class="teacher-result-card">' +
+          '<div class="teacher-result-card__status">' +
+            '<span class="teacher-result-icon">' + status.icon + '</span>' +
+            '<strong>' + status.label + '</strong>' +
+            '<div class="teacher-result-stars">' + _buildReportStars(stars) + '</div>' +
+          '</div>' +
+          '<div class="teacher-result-card__metrics">' +
+            _buildReportMetric('🎯', '목표 출근 시간', _formatReportTime(getWorkStartTime())) +
+            _buildReportMetric('🕘', '실제 도착 시간', _formatReportTime(arrivalTime)) +
+            _buildReportMetric('⏱️', '소요 시간', totalMinutes === null ? '-' : totalMinutes + '분') +
+            _buildReportMetric('🏅', '결과 평가', status.shortLabel) +
+          '</div>' +
+        '</article>' +
+        '<article class="teacher-summary-card">' +
+          '<h3>한눈에 보는 요약</h3>' +
+          '<div class="teacher-summary-grid">' +
+            _buildReportSummaryTile('✅', '완료한 단계', completedSteps + ' / ' + steps.length, '단계') +
+            _buildReportSummaryTile('⭐', '획득 별점', stars + ' / 3', '개') +
+            _buildReportSummaryTile('🕒', '지각 여부', status.lateLabel, '') +
+          '</div>' +
+          '<p class="teacher-summary-comment">👍 ' + status.summary + '</p>' +
+        '</article>' +
+      '</section>' +
+      '<section class="teacher-dashboard__middle">' +
+        '<article class="teacher-timeline-card">' +
+          '<h3>오늘의 출근 과정</h3>' +
+          '<div class="teacher-timeline-list">' + steps.map(_buildReportTimelineStep).join('') + '</div>' +
+          '<p class="teacher-timeline-note">✅ 완료된 단계는 초록 표시로 확인할 수 있어요.</p>' +
+        '</article>' +
+        '<article class="teacher-late-card">' +
+          '<div class="teacher-late-card__header">' +
+            '<h3>지각 발생 정보</h3>' +
+            '<span>' + status.lateLabel + '</span>' +
+          '</div>' +
+          _buildReportLateRow('지각 여부', status.lateLabel) +
+          _buildReportLateRow('지각 원인', status.reason) +
+          _buildReportLateRow('추천 개선 방법', status.recommendation) +
+          _buildReportLateRow('현재 상태', status.currentState) +
+        '</article>' +
+      '</section>' +
+      '<section class="teacher-feedback-row">' +
+        '<article class="teacher-feedback-card teacher-feedback-card--good">' +
+          '<h3>잘한 점 👍</h3>' +
+          '<ul>' + goodItems.map(function(item) { return '<li>✅ ' + _escapeHtml(item) + '</li>'; }).join('') + '</ul>' +
+        '</article>' +
+        '<article class="teacher-feedback-card teacher-feedback-card--next">' +
+          '<h3>내일 해볼 점 💡</h3>' +
+          '<ul>' + retryItems.map(function(item) { return '<li>' + _escapeHtml(item) + '</li>'; }).join('') + '</ul>' +
+        '</article>' +
+        '<article class="teacher-feedback-card teacher-feedback-card--memo">' +
+          '<h3>교사 메모 ✎</h3>' +
+          '<textarea aria-label="교사 메모" placeholder="메모를 입력해주세요."></textarea>' +
+        '</article>' +
+      '</section>' +
+    '</div>';
+}
 
+function _getReportStatus(judgment, causeList, reqStatus) {
+  var firstCause = causeList && causeList.length ? causeList[0].action : '';
+  if (judgment === 'success' || judgment === 'incomplete') {
+    return {
+      key: 'success',
+      label: '출근 성공',
+      shortLabel: '성공',
+      icon: '😊',
+      stars: 3,
+      lateLabel: '지각 아님',
+      summary: '시간에 맞춰 출근에 성공했어요.',
+      reason: '해당 없음',
+      recommendation: '현재 생활 습관을 유지하면 좋아요.',
+      currentState: '지금의 생활 습관을 잘 유지하면 좋아요!'
+    };
+  }
+  if (judgment === 'late') {
+    return {
+      key: 'late',
+      label: '지각',
+      shortLabel: '지각',
+      icon: '⏰',
+      stars: 2,
+      lateLabel: '지각',
+      summary: '출근은 완료했지만 목표 시간보다 늦었어요.',
+      reason: firstCause || '출발 시간이 늦었어요.',
+      recommendation: '출발 시간을 조금 여유 있게 맞추면 더 좋아요.',
+      currentState: '출근 순서는 완료했어요. 시간 조절을 연습해요.'
+    };
+  }
+  return {
+    key: 'fail',
+    label: '출근 실패',
+    shortLabel: '실패',
+    icon: '🔁',
+    stars: 1,
+    lateLabel: '실패',
+    summary: '출근 과정 중 다시 연습이 필요해요.',
+    reason: firstCause || (reqStatus && !reqStatus.allRequired ? '필수 준비물이 부족했어요.' : '출근 가능 시간이 지났어요.'),
+    recommendation: '출근 순서와 시간을 한 단계씩 다시 확인해요.',
+    currentState: '재도전 연습이 필요해요.'
+  };
+}
+
+function _buildReportTimelineSteps(state, judgment) {
+  var commute = state.commute || {};
+  var evePrep = state.evePrep || {};
+  var wakeTime = commute.wakeTime || state.startTime;
+  var busRideMinutes = typeof commuteConfig !== 'undefined' ? commuteConfig.busRideMinutes : 30;
+  var walkToWorkMinutes = typeof commuteConfig !== 'undefined' ? commuteConfig.walkToWorkMinutes : 10;
+  var busBoarding = commute.busBoardingTime;
+  var busEnd = busBoarding !== null && busBoarding !== undefined ? busBoarding + busRideMinutes : null;
+  var arrival = commute.arrivalTime || (state.time && state.time.current);
+  var finalComplete = judgment === 'success' || judgment === 'late' || !!arrival;
+  var hasAlarm = evePrep.alarmTime !== null && evePrep.alarmTime !== undefined && evePrep.alarmTime !== -1;
+  var hasWake = wakeTime !== null && wakeTime !== undefined;
+  var hasHomeDeparture = commute.homeDepartureTime !== null && commute.homeDepartureTime !== undefined;
+  var hasStopArrival = commute.stopArrivalTime !== null && commute.stopArrivalTime !== undefined;
+  var hasBusBoarding = busBoarding !== null && busBoarding !== undefined;
+  var hasArrival = arrival !== null && arrival !== undefined;
+  return [
+    { icon: '⏰', label: '알람 맞추기', time: hasAlarm ? _formatReportTime(evePrep.alarmTime) : '-', complete: hasAlarm },
+    { icon: '🌙', label: '잠자기', time: '22:00', complete: true },
+    { icon: '☀️', label: '기상하기', time: hasWake ? _formatReportTime(wakeTime) : '-', complete: hasWake },
+    { icon: '🪥', label: '아침 준비', time: hasWake ? _formatReportTime(wakeTime) : '-', complete: !!(state.morningPrep && state.morningPrep.completedActivities && state.morningPrep.completedActivities.length) },
+    { icon: '🎒', label: '가방 챙기기', time: hasHomeDeparture ? _formatReportTime(commute.homeDepartureTime) : '-', complete: !!(state.morningPrep && state.morningPrep.bagChecked) },
+    { icon: '🗺️', label: '출근 경로 확인', time: hasHomeDeparture ? _formatReportTime(commute.homeDepartureTime) : '-', complete: hasHomeDeparture },
+    { icon: '🚏', label: '버스 정류장', time: hasStopArrival ? _formatReportTime(commute.stopArrivalTime) : '-', complete: hasStopArrival },
+    { icon: '🚌', label: '버스 탑승', time: hasBusBoarding ? _formatReportTime(busBoarding) : '-', complete: hasBusBoarding || commute.transportMode === 'taxi' },
+    { icon: '💺', label: '버스 이동', time: hasBusBoarding && busEnd ? _formatReportTime(busBoarding) + '~' + _formatReportTime(busEnd) : '-', complete: !!busEnd || commute.transportMode === 'taxi' },
+    { icon: '🔔', label: '버스 하차', time: busEnd ? _formatReportTime(busEnd) : '-', complete: !!busEnd || commute.transportMode === 'taxi' },
+    { icon: '🚶', label: '회사 가는 길', time: busEnd && hasArrival ? _formatReportTime(busEnd) + '~' + _formatReportTime(arrival) : (hasArrival && walkToWorkMinutes ? _formatReportTime(arrival - walkToWorkMinutes) + '~' + _formatReportTime(arrival) : '-'), complete: hasArrival },
+    { icon: '🏢', label: '회사 도착', time: hasArrival ? _formatReportTime(arrival) : '-', complete: finalComplete }
+  ];
+}
+
+function _formatReportTime(value) {
+  if (typeof value !== 'number' || !isFinite(value)) return '-';
+  return formatTime(value);
+}
+
+function _buildReportMetric(icon, label, value) {
+  return '<div class="teacher-report-metric"><span>' + icon + ' ' + label + '</span><strong>' + _escapeHtml(value) + '</strong></div>';
+}
+
+function _buildReportSummaryTile(icon, label, value, unit) {
+  return '<div class="teacher-summary-tile"><span>' + icon + '</span><small>' + label + '</small><strong>' + _escapeHtml(value) + '</strong><em>' + _escapeHtml(unit) + '</em></div>';
+}
+
+function _buildReportStars(count) {
   var html = '';
-
-  // 헤더
-  html += '<div class="report-detail">';
-  html += '<h2 class="report-title">📋 출근 시뮬레이션 결과 보고서</h2>';
-  html += '<div class="report-meta">';
-  html += '<p><strong>학생 이름:</strong> ' + _escapeHtml(student.name) + '</p>';
-  html += '<p><strong>수준:</strong> ' + _escapeHtml(student.level) + '</p>';
-  html += '<p><strong>날짜:</strong> ' + dateStr + '</p>';
-  html += '</div>';
-
-  // 판정 결과
-  html += '<div class="report-judgment ' + judgmentInfo.cssClass + '">';
-  html += '<span class="judgment-emoji">' + judgmentInfo.emoji + '</span>';
-  html += '<span class="judgment-label">' + judgmentInfo.label + '</span>';
-  html += '</div>';
-
-  // 도착 시간
-  html += '<div class="report-section">';
-  html += '<h3>⏰ 출근 시간 기록</h3>';
-  html += '<p><strong>AI 생성 출근 시간:</strong> ' + formatTime(getWorkStartTime()) + '</p>';
-  html += '<p><strong>알람 설정 시각:</strong> ' + (evePrep.alarmTime === -1 || evePrep.alarmTime === null ? '설정하지 않음' : formatTime(evePrep.alarmTime)) + '</p>';
-  html += '<p><strong>기상 시각:</strong> ' + formatTime(commute.wakeTime || state.startTime) + '</p>';
-  html += '<p><strong>집 출발 시각:</strong> ' + (commute.homeDepartureTime !== null && commute.homeDepartureTime !== undefined ? formatTime(commute.homeDepartureTime) : '-') + '</p>';
-  html += '<p><strong>버스 탑승 시각:</strong> ' + (commute.transportMode === 'taxi' ? '택시 이용' : (commute.busBoardingTime !== null && commute.busBoardingTime !== undefined ? formatTime(commute.busBoardingTime) : '-')) + '</p>';
-  if (commute.missedBusTimes && commute.missedBusTimes.length > 0) {
-    html += '<p><strong>놓친 버스:</strong> ' + commute.missedBusTimes.map(function(t) { return formatTime(t); }).join(', ') + '</p>';
+  for (var i = 0; i < 3; i++) {
+    html += '<span class="' + (i < count ? 'is-on' : 'is-off') + '">★</span>';
   }
-  html += '<p class="arrival-time">' + formatTime(time.current) + '</p>';
-  html += '<p class="target-time">출근 목표: ' + formatTime(time.target) + '</p>';
-  html += '</div>';
-
-  html += '<div class="report-section">';
-  html += '<h3>🤖 AI 출근 정보</h3>';
-  html += '<p><strong>장소:</strong> ' + _escapeHtml((state.todayInfo && state.todayInfo.workplace) || '본앤하이리') + '</p>';
-  html += '<p><strong>오늘의 직무:</strong> ' + _escapeHtml((state.todayDuties || []).map(function(d) { return d.name; }).join(', ')) + '</p>';
-  html += '<p><strong>필요한 준비물:</strong> ' + _escapeHtml(((state.todayInfo && state.todayInfo.requiredItems) || []).join(', ')) + '</p>';
-  html += '<p><strong>주의할 점:</strong> ' + _escapeHtml((state.todayInfo && state.todayInfo.caution) || '') + '</p>';
-  html += '</div>';
-
-  // 가방 상태
-  html += '<div class="report-section">';
-  html += '<h3>🎒 가방 상태 (준비도: ' + readiness + '%)</h3>';
-  html += '<div class="bag-status">';
-
-  for (var i = 0; i < bagItems.length; i++) {
-    var item = bagItems[i];
-    var statusIcon = item.checked ? '✅' : '❌';
-    var requiredTag = item.required ? ' <span class="required-tag">[필수]</span>' : '';
-    html += '<div class="bag-item ' + (item.checked ? 'checked' : 'unchecked') + '">';
-    html += statusIcon + ' ' + item.icon + ' ' + _escapeHtml(item.name) + requiredTag;
-    html += '</div>';
-  }
-
-  html += '</div>';
-
-  // 누락 필수 아이템 경고
-  if (!reqStatus.allRequired) {
-    html += '<p class="missing-warning">⚠️ 누락된 필수 아이템: ' +
-      _escapeHtml(reqStatus.missing.join(', ')) + '</p>';
-  }
-  html += '</div>';
-
-  // 행동 타임라인
-  html += '<div class="report-section">';
-  html += '<h3>📝 행동 타임라인</h3>';
-  html += '<table class="timeline-table">';
-  html += '<thead><tr><th>시각</th><th>행동</th><th>결과</th><th>소요시간</th></tr></thead>';
-  html += '<tbody>';
-
-  for (var j = 0; j < actionLog.length; j++) {
-    var entry = actionLog[j];
-    html += '<tr>';
-    html += '<td>' + formatTime(entry.time) + '</td>';
-    html += '<td>' + (entry.icon || '') + ' ' + _escapeHtml(entry.action) + '</td>';
-    html += '<td>' + _escapeHtml(entry.consequence) + '</td>';
-    html += '<td>' + entry.timeCost + '분</td>';
-    html += '</tr>';
-  }
-
-  html += '</tbody></table>';
-  html += '</div>';
-
-  // 원인 분석
-  if (causeList.length > 0) {
-    html += '<div class="report-section">';
-    html += '<h3>🔍 지연 원인 분석</h3>';
-    html += '<ul class="cause-list">';
-
-    for (var k = 0; k < causeList.length; k++) {
-      html += '<li>' + _escapeHtml(causeList[k].action) +
-        ' (추가 소요: ' + causeList[k].timeCost + '분)</li>';
-    }
-
-    html += '</ul>';
-    html += '</div>';
-  }
-
-  // AI 분석 의견
-  var aiFeedback = generateAICoachingFeedback(state);
-  html += '<div class="report-section report-section--ai" style="background: var(--color-primary-surface); padding: var(--space-lg); border-radius: var(--radius-md); border: 2px solid var(--color-primary); margin-bottom: var(--space-lg); text-align: left;">';
-  html += '<h3 style="color: var(--color-primary-dark); display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">🤖 AI 종합 분석 의견</h3>';
-  html += '<p class="ai-feedback-text" style="font-size: var(--font-size-base); line-height: 1.7; color: var(--color-text);">' + aiFeedback + '</p>';
-  html += '</div>';
-
-  // 반성 항목
-  if (state.reflections && state.reflections.length > 0) {
-    html += '<div class="report-section">';
-    html += '<h3>💡 학생 반성 항목</h3>';
-    html += '<ul class="reflection-list">';
-
-    for (var r = 0; r < state.reflections.length; r++) {
-      html += '<li>' + _escapeHtml(state.reflections[r]) + '</li>';
-    }
-
-    html += '</ul>';
-    html += '</div>';
-  }
-
-  html += '</div>'; // .report-detail
-
   return html;
+}
+
+function _buildReportTimelineStep(step) {
+  return '<div class="teacher-timeline-step ' + (step.complete ? 'is-complete' : 'is-pending') + '">' +
+    '<span class="teacher-timeline-step__icon">' + step.icon + '</span>' +
+    '<strong>' + _escapeHtml(step.label) + '</strong>' +
+    '<em>' + _escapeHtml(step.time) + '</em>' +
+    '<b>' + (step.complete ? '✓' : '-') + '</b>' +
+  '</div>';
+}
+
+function _buildReportLateRow(label, value) {
+  return '<div class="teacher-late-row"><span>' + _escapeHtml(label) + '</span><strong>' + _escapeHtml(value) + '</strong></div>';
+}
+
+function _buildReportGoodItems(judgment, reqStatus) {
+  if (judgment === 'success' || judgment === 'incomplete') {
+    return ['알람을 맞추고 일어났어요.', '필요한 준비물을 확인했어요.', '회사에 시간에 맞춰 도착했어요.'];
+  }
+  if (judgment === 'late') {
+    return ['출근 과정을 끝까지 완료했어요.', '버스와 정류장 정보를 확인했어요.', '회사까지 이동했어요.'];
+  }
+  var missing = reqStatus && reqStatus.missing && reqStatus.missing.length ? '누락 준비물: ' + reqStatus.missing.join(', ') : '출근 순서를 다시 확인했어요.';
+  return ['출근 연습을 끝까지 시도했어요.', missing, '다시 연습할 준비가 되었어요.'];
+}
+
+function _buildReportRetryItems(judgment, primary, status) {
+  var retry = primary && primary.retryMessage ? primary.retryMessage : status.recommendation;
+  if (judgment === 'success' || judgment === 'incomplete') {
+    return ['오늘처럼 출발 시간을 기억해요.', '가방 확인을 계속 유지해요.'];
+  }
+  if (judgment === 'late') {
+    return [retry, '내릴 정류장을 한 번 더 확인해요.'];
+  }
+  return [retry, '출근 순서를 카드처럼 하나씩 따라가요.'];
 }
 
 /**

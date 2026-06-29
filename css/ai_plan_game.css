@@ -1120,3 +1120,1572 @@
     font-size: 1.4rem;
   }
 }
+
+/* S004/S005 AI commute plan: S010-style classroom game scale */
+#screen-ai-plan.active {
+  overflow: hidden;
+}
+
+#screen-ai-plan .ai-plan {
+  display: grid;
+  grid-template-rows: minmax(118px, auto) minmax(0, 1fr);
+  gap: clamp(16px, 1.7vw, 28px);
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(18px, 2vw, 34px) clamp(26px, 3vw, 56px) 126px;
+}
+
+#screen-ai-plan .ai-plan__header {
+  grid-template-columns: clamp(86px, 7vw, 118px) minmax(0, 1fr) minmax(240px, auto);
+  min-height: clamp(118px, 13vh, 152px);
+  padding: clamp(16px, 1.6vw, 26px) clamp(24px, 2.3vw, 40px);
+  border-width: 6px;
+  border-radius: 36px;
+}
+
+#screen-ai-plan .ai-plan__coach {
+  width: clamp(82px, 6.4vw, 108px);
+  height: clamp(82px, 6.4vw, 108px);
+  font-size: 3.7rem;
+}
+
+#screen-ai-plan .ai-plan__header h2 {
+  max-width: 1120px;
+  font-size: 3.25rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+  word-break: keep-all;
+}
+
+#screen-ai-plan .ai-plan__review {
+  min-width: 0;
+  min-height: 78px;
+  padding: 0 clamp(22px, 2vw, 34px);
+  border-radius: 999px;
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+#screen-ai-plan #ai-plan-form-view.ai-plan__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: clamp(16px, 1.6vw, 26px);
+  height: auto;
+  min-height: 0;
+  padding: 0;
+}
+
+#screen-ai-plan #ai-plan-form {
+  grid-template-columns: repeat(3, minmax(250px, 1fr));
+  grid-template-rows: repeat(2, minmax(210px, 1fr));
+  gap: clamp(16px, 1.45vw, 24px);
+  min-height: 0;
+  padding: clamp(18px, 1.7vw, 28px);
+  overflow: visible;
+  border-width: 6px;
+  border-radius: 34px;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field {
+  grid-template-rows: auto minmax(112px, 1fr);
+  align-content: stretch;
+  gap: 14px;
+  min-height: 210px;
+  padding: clamp(16px, 1.4vw, 24px);
+  border-width: 5px;
+  border-radius: 30px;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  font-size: 1.75rem;
+  font-weight: 950;
+  line-height: 1.14;
+  letter-spacing: 0;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child > i {
+  display: grid;
+  place-items: center;
+  width: clamp(56px, 4.8vw, 76px);
+  height: clamp(56px, 4.8vw, 76px);
+  border: 4px solid #fff;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #fff6bc, #ffc94b);
+  box-shadow: 0 5px 0 rgba(172,105,10,.75);
+  font-size: 2.65rem;
+}
+
+#screen-ai-plan #ai-plan-form select,
+#screen-ai-plan #ai-plan-form .ai-plan__input-unit input {
+  min-width: 0;
+  height: clamp(82px, 8.4vh, 104px);
+  min-height: 82px;
+  padding: 10px clamp(16px, 1.4vw, 22px);
+  border-width: 5px;
+  border-radius: 24px;
+  font-size: 1.9rem;
+  line-height: 1.12;
+  text-align: center;
+  white-space: normal;
+}
+
+#screen-ai-plan #ai-plan-form select {
+  cursor: pointer;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__input-unit {
+  grid-template-columns: minmax(0, 1fr) clamp(44px, 3.2vw, 58px);
+  align-self: stretch;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__input-unit em {
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 82px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.74);
+  color: #174d69;
+  font-size: 1.6rem;
+  font-weight: 950;
+}
+
+#screen-ai-plan .ai-inline-clock {
+  width: min(360px, 100%);
+  grid-template-columns: minmax(78px, 1fr) minmax(78px, 1fr);
+  grid-template-rows: 48px minmax(92px, 1fr) 48px;
+  gap: 8px 16px;
+}
+
+#screen-ai-plan .ai-inline-clock button {
+  min-height: 48px;
+  border-radius: 16px;
+  font-size: 1.7rem;
+}
+
+#screen-ai-plan .ai-inline-clock__value {
+  min-height: 92px;
+  border-width: 5px;
+  border-radius: 24px;
+  font-size: 3.55rem;
+  letter-spacing: 0;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic {
+  grid-row: 1 / span 2;
+  min-height: 0;
+  gap: clamp(12px, 1.1vw, 18px);
+  padding: clamp(18px, 1.7vw, 28px);
+  border-width: 6px;
+  border-radius: 34px;
+}
+
+#screen-ai-plan .ai-plan__tip-coach {
+  width: clamp(92px, 7vw, 122px);
+  height: clamp(92px, 7vw, 122px);
+  font-size: 4rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > strong {
+  font-size: 1.85rem;
+  line-height: 1.18;
+  word-break: keep-all;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach) {
+  min-height: 82px;
+  padding: 14px 18px;
+  border-width: 4px;
+  border-radius: 22px;
+  font-size: 1.28rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div b {
+  font-size: 1.8rem;
+}
+
+#screen-ai-plan .ai-plan__footer {
+  position: fixed;
+  z-index: 225;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: minmax(260px, 460px) minmax(480px, 760px);
+  justify-content: center;
+  align-items: center;
+  gap: clamp(16px, 1.6vw, 28px);
+  min-height: 118px;
+  padding: 14px clamp(24px, 3vw, 56px) 18px;
+  background: linear-gradient(180deg, rgba(230,247,192,0), rgba(230,247,192,.98) 28%);
+  pointer-events: none;
+}
+
+#screen-ai-plan .ai-plan__form-message,
+#screen-ai-plan .ai-plan__calculate {
+  pointer-events: auto;
+}
+
+#screen-ai-plan .ai-plan__form-message {
+  min-height: 60px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 8px 16px;
+  border: 4px solid rgba(255,255,255,.9);
+  border-radius: 22px;
+  background: rgba(255,255,255,.78);
+  font-size: 1.3rem;
+  line-height: 1.25;
+  word-break: keep-all;
+}
+
+#screen-ai-plan .ai-plan__calculate {
+  width: 100%;
+  min-width: 0;
+  min-height: 88px;
+  padding: 12px clamp(24px, 2.4vw, 42px);
+  border-width: 6px;
+  border-radius: 999px;
+  font-size: 2rem;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+#screen-ai-plan #ai-plan-result.ai-plan__result:not([hidden]) {
+  grid-template-columns: minmax(470px, .9fr) minmax(610px, 1.1fr);
+  gap: clamp(18px, 1.8vw, 30px);
+  height: auto;
+  min-height: 0;
+  padding: 0 0 112px;
+  overflow: visible;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-coach {
+  grid-template-columns: clamp(96px, 7vw, 126px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(112px, auto) minmax(0, 1fr);
+  gap: clamp(14px, 1.2vw, 20px);
+  padding: clamp(20px, 2vw, 34px);
+  border-width: 6px;
+  border-radius: 34px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-badge {
+  min-height: 48px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 1.22rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-character {
+  font-size: 6.8rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-speech {
+  padding: clamp(16px, 1.5vw, 24px);
+  border-radius: 28px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-speech > span {
+  font-size: 1.02rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-speech h2 {
+  font-size: 2rem;
+  letter-spacing: 0;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-speech p {
+  font-size: 1.18rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.2vw, 20px);
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card {
+  grid-template-columns: clamp(70px, 5.5vw, 88px) minmax(0, 1fr);
+  grid-template-rows: auto minmax(46px, auto);
+  column-gap: clamp(12px, 1.1vw, 18px);
+  min-height: 150px;
+  padding: clamp(16px, 1.5vw, 24px);
+  border-width: 5px;
+  border-radius: 28px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card i {
+  grid-row: 1 / span 2;
+  width: clamp(68px, 5.3vw, 86px);
+  height: clamp(68px, 5.3vw, 86px);
+  border-radius: 24px;
+  font-size: 2.75rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card span {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card strong {
+  align-self: center;
+  overflow: visible;
+  font-size: 2.05rem;
+  line-height: 1.12;
+  white-space: normal;
+  word-break: keep-all;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline {
+  grid-template-rows: auto repeat(5, minmax(82px, auto));
+  gap: clamp(9px, .8vw, 13px);
+  padding: clamp(18px, 1.7vw, 28px);
+  border-width: 6px;
+  border-radius: 34px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title {
+  min-height: 58px;
+  padding: 10px 18px;
+  border-radius: 22px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title span {
+  font-size: 1.45rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title strong {
+  font-size: 1rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step {
+  grid-template-columns: clamp(48px, 3.6vw, 60px) clamp(112px, 8vw, 138px) clamp(48px, 3.6vw, 62px) minmax(0, 1fr);
+  gap: clamp(10px, .9vw, 16px);
+  min-height: 82px;
+  padding: 10px 16px;
+  border-width: 4px;
+  border-radius: 22px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-number,
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > i {
+  width: clamp(46px, 3.4vw, 58px);
+  height: clamp(46px, 3.4vw, 58px);
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step time {
+  font-size: 1.9rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div strong {
+  font-size: 1.22rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div span {
+  font-size: 1rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-actions {
+  min-height: 118px;
+  gap: clamp(16px, 1.7vw, 28px);
+  padding: 14px clamp(24px, 3vw, 56px) 18px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-actions button {
+  min-height: 88px;
+  padding: 12px clamp(24px, 2.4vw, 42px);
+  border-radius: 999px;
+  font-size: 1.95rem;
+  font-weight: 950;
+  line-height: 1.12;
+  white-space: nowrap;
+}
+
+#screen-ai-plan #ai-plan-result #btn-ai-plan-edit {
+  min-width: min(340px, 30vw);
+}
+
+#screen-ai-plan #ai-plan-result #btn-ai-plan-continue {
+  min-width: min(640px, 56vw);
+}
+
+@media (max-width: 1366px) and (min-width: 1000px) {
+  #screen-ai-plan .ai-plan {
+    grid-template-rows: minmax(96px, auto) minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px 16px 100px;
+  }
+
+  #screen-ai-plan .ai-plan__header {
+    grid-template-columns: 68px minmax(0, 1fr) minmax(190px, auto);
+    min-height: 96px;
+    padding: 10px 16px;
+    border-radius: 28px;
+  }
+
+  #screen-ai-plan .ai-plan__coach {
+    width: 64px;
+    height: 64px;
+    font-size: 2.6rem;
+  }
+
+  #screen-ai-plan .ai-plan__header h2 {
+    font-size: 2.15rem;
+  }
+
+  #screen-ai-plan .ai-plan__review {
+    min-height: 62px;
+    padding-inline: 16px;
+    font-size: 1.08rem;
+  }
+
+  #screen-ai-plan #ai-plan-form-view.ai-plan__body {
+    grid-template-columns: minmax(0, 1fr) 282px;
+    gap: 10px;
+  }
+
+  #screen-ai-plan #ai-plan-form {
+    grid-template-rows: repeat(2, minmax(178px, 1fr));
+    gap: 10px;
+    padding: 11px;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field {
+    min-height: 178px;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 24px;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child {
+    font-size: 1.22rem;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child > i {
+    width: 46px;
+    height: 46px;
+    font-size: 2rem;
+  }
+
+  #screen-ai-plan #ai-plan-form select,
+  #screen-ai-plan #ai-plan-form .ai-plan__input-unit input {
+    height: 66px;
+    min-height: 66px;
+    font-size: 1.34rem;
+  }
+
+  #screen-ai-plan .ai-inline-clock {
+    grid-template-rows: 36px 70px 36px;
+    gap: 5px 10px;
+  }
+
+  #screen-ai-plan .ai-inline-clock button {
+    min-height: 36px;
+    font-size: 1.25rem;
+  }
+
+  #screen-ai-plan .ai-inline-clock__value {
+    min-height: 70px;
+    font-size: 2.65rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic {
+    gap: 7px;
+    padding: 10px;
+    border-radius: 26px;
+  }
+
+  #screen-ai-plan .ai-plan__tip-coach {
+    width: 58px;
+    height: 58px;
+    font-size: 2.35rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > strong {
+    font-size: 1.25rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach) {
+    min-height: 54px;
+    padding: 7px 9px;
+    font-size: .95rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > div b {
+    font-size: 1.28rem;
+  }
+
+  #screen-ai-plan .ai-plan__footer {
+    grid-template-columns: 330px minmax(420px, 600px);
+    min-height: 94px;
+    padding: 8px 16px 10px;
+  }
+
+  #screen-ai-plan .ai-plan__form-message {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  #screen-ai-plan .ai-plan__calculate {
+    min-height: 70px;
+    font-size: 1.42rem;
+  }
+
+  #screen-ai-plan #ai-plan-result.ai-plan__result:not([hidden]) {
+    grid-template-columns: minmax(370px, .9fr) minmax(520px, 1.18fr);
+    gap: 10px;
+    padding-bottom: 92px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-coach {
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 8px;
+    padding: 12px;
+    border-radius: 26px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-character {
+    font-size: 4.2rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary {
+    gap: 8px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    min-height: 104px;
+    padding: 10px;
+    border-radius: 22px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card i {
+    width: 50px;
+    height: 50px;
+    font-size: 1.85rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card span {
+    font-size: .95rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card strong {
+    font-size: 1.55rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline {
+    grid-template-rows: auto repeat(5, minmax(64px, auto));
+    gap: 6px;
+    padding: 10px;
+    border-radius: 26px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step {
+    grid-template-columns: 38px 86px 38px minmax(0, 1fr);
+    min-height: 64px;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-number,
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > i {
+    width: 35px;
+    height: 35px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step time {
+    font-size: 1.42rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div strong {
+    font-size: .95rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div span {
+    font-size: .78rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-actions {
+    min-height: 92px;
+    padding: 8px 16px 10px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-actions button {
+    min-height: 70px;
+    font-size: 1.38rem;
+  }
+}
+
+/* S004/S005 second pass: mission room scene */
+#screen-ai-plan.active {
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(133, 84, 32, .18) 0 5px, transparent 5px 100%) 0 0 / 145px 100%,
+    radial-gradient(circle at 7% 89%, rgba(95, 168, 78, .5) 0 54px, transparent 56px),
+    radial-gradient(circle at 92% 88%, rgba(213, 151, 75, .5) 0 66px, transparent 68px),
+    linear-gradient(180deg, #ffc86d 0 8%, #f8dc9c 8% 58%, #dfaa61 58% 59%, #c98238 59% 100%);
+}
+
+#screen-ai-plan.active::before {
+  content: '';
+  position: absolute;
+  left: 5%;
+  top: 104px;
+  width: 34%;
+  height: 205px;
+  border: 10px solid rgba(186, 123, 47, .7);
+  border-radius: 22px;
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(186, 123, 47, .6) 49% 51%, transparent 51%),
+    linear-gradient(180deg, transparent 49%, rgba(186, 123, 47, .45) 49% 51%, transparent 51%),
+    radial-gradient(circle at 28% 42%, #fff 0 24px, transparent 25px),
+    radial-gradient(circle at 72% 36%, #fff 0 30px, transparent 31px),
+    linear-gradient(180deg, #7fd5ff 0%, #d9f7ff 55%, #abe17c 56%, #88c65f 100%);
+  box-shadow: inset 0 0 0 5px rgba(255,255,255,.6), 0 12px 28px rgba(105, 64, 24, .2);
+  pointer-events: none;
+}
+
+#screen-ai-plan.active::after {
+  content: '';
+  position: absolute;
+  right: 4%;
+  top: 116px;
+  width: 18%;
+  height: 245px;
+  border: 10px solid #8d5b31;
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.08) 0 5px, transparent 5px 32px) 0 0 / 34px 100%,
+    linear-gradient(180deg, #875128 0 16%, #be8244 16% 18%, #875128 18% 49%, #be8244 49% 51%, #875128 51% 82%, #be8244 82% 84%, #875128 84%);
+  box-shadow: inset 0 0 0 4px rgba(255,255,255,.12), 0 14px 28px rgba(79, 45, 19, .22);
+  pointer-events: none;
+}
+
+#screen-ai-plan .ai-plan {
+  position: relative;
+  z-index: 1;
+  grid-template-rows: 116px minmax(178px, auto) minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px 24px 120px;
+}
+
+#screen-ai-plan .ai-plan::before,
+#screen-ai-plan .ai-plan::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#screen-ai-plan .ai-plan::before {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 170px;
+  background:
+    radial-gradient(ellipse at 50% 76%, rgba(130, 166, 63, .68) 0 34%, transparent 35%),
+    linear-gradient(180deg, transparent, rgba(116, 73, 26, .2));
+}
+
+#screen-ai-plan .ai-plan::after {
+  right: 30px;
+  bottom: 14px;
+  width: 118px;
+  height: 118px;
+  border-radius: 28px 28px 18px 18px;
+  background:
+    radial-gradient(circle at 50% 50%, #ffd54e 0 17px, transparent 18px),
+    linear-gradient(180deg, #1d7ab2, #07517e);
+  border: 7px solid #0a4b76;
+  box-shadow: inset 0 0 0 5px rgba(255,255,255,.16), 0 10px 0 rgba(26, 61, 87, .32);
+}
+
+#screen-ai-plan .ai-plan__header {
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(420px, 1.05fr) repeat(2, minmax(230px, .78fr)) minmax(240px, .72fr);
+  gap: 14px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#screen-ai-plan .ai-plan__header > div:nth-child(2) {
+  grid-column: 1;
+  display: grid;
+  place-items: center start;
+  min-width: 0;
+  padding: 12px 28px;
+  border: 5px solid #fff;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #9b4df1, #5c25be);
+  color: #fff;
+  box-shadow: 0 7px 0 #3e1784, 0 12px 18px rgba(62, 23, 132, .22);
+}
+
+#screen-ai-plan .ai-plan__header > div:nth-child(2)::before {
+  content: '⭐ AI 출근 미션';
+  color: #fff;
+  font-size: 1.95rem;
+  font-weight: 950;
+  line-height: 1;
+  text-shadow: 0 3px 0 rgba(0,0,0,.18);
+}
+
+#screen-ai-plan .ai-plan__header p,
+#screen-ai-plan .ai-plan__header h2 {
+  display: none;
+}
+
+#screen-ai-plan .ai-plan__header::before,
+#screen-ai-plan .ai-plan__header::after {
+  content: '';
+  display: grid;
+  place-items: center;
+  min-height: 86px;
+  border: 4px solid rgba(255,255,255,.95);
+  border-radius: 18px;
+  background: rgba(255,255,255,.9);
+  color: #243647;
+  box-shadow: 0 5px 0 rgba(186, 137, 62, .32);
+  font-size: 1.18rem;
+  font-weight: 900;
+  line-height: 1.15;
+  text-align: center;
+  white-space: pre;
+}
+
+#screen-ai-plan .ai-plan__header::before {
+  content: '목표 출근 시간\A 09:00';
+  color: #6240b7;
+  font-size: 1.45rem;
+}
+
+#screen-ai-plan .ai-plan__header::after {
+  content: '현재 시간\A 07:20';
+  color: #158557;
+  font-size: 1.45rem;
+}
+
+#screen-ai-plan .ai-plan__coach {
+  position: absolute;
+  top: 132px;
+  right: 520px;
+  z-index: 3;
+  width: 150px;
+  height: 150px;
+  margin: 0;
+  border-width: 7px;
+  border-radius: 42px;
+  background: linear-gradient(180deg, #fbfdff 0%, #d8f1ff 52%, #fff 53%, #f4f6ff 100%);
+  color: transparent;
+  font-size: 0;
+  box-shadow: 0 9px 0 #9aa8bd, 0 14px 26px rgba(41, 70, 93, .22);
+}
+
+#screen-ai-plan .ai-plan__coach::before {
+  content: '';
+  width: 92px;
+  height: 58px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 30% 50%, #5dffff 0 8px, transparent 9px),
+    radial-gradient(circle at 70% 50%, #5dffff 0 8px, transparent 9px),
+    linear-gradient(180deg, #17223f, #091126);
+  box-shadow: inset 0 -4px 0 rgba(255,255,255,.09);
+}
+
+#screen-ai-plan .ai-plan__coach::after {
+  content: '';
+  position: absolute;
+  inset: -14px 16px auto;
+  height: 20px;
+  background:
+    radial-gradient(circle at 0 50%, #ff6cac 0 11px, transparent 12px),
+    radial-gradient(circle at 100% 50%, #ff6cac 0 11px, transparent 12px);
+}
+
+#screen-ai-plan .ai-plan__review {
+  grid-column: 4;
+  grid-row: 1;
+  align-self: stretch;
+  min-height: 86px;
+  border-width: 5px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #229af1, #0872c6);
+  color: #fff;
+  box-shadow: 0 7px 0 #07538d, 0 12px 20px rgba(7, 83, 141, .22);
+}
+
+#screen-ai-plan #ai-plan-form-view.ai-plan__body {
+  grid-row: 2 / span 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+  grid-template-rows: minmax(166px, auto) minmax(0, 1fr);
+  gap: 14px;
+  padding: 0 0 2px;
+}
+
+#screen-ai-plan #ai-plan-form-view.ai-plan__body::before {
+  content: 'AI에게 출근 정보를 알려주세요!';
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  align-items: center;
+  width: min(900px, calc(100% - 520px));
+  min-height: 158px;
+  padding-left: 42px;
+  border-radius: 46px;
+  background: rgba(255,255,255,.72);
+  color: #42220f;
+  font-size: 3.35rem;
+  font-weight: 950;
+  line-height: 1.12;
+  text-shadow: 0 4px 0 #fff;
+  box-shadow: 0 5px 0 rgba(255,255,255,.85);
+}
+
+#screen-ai-plan #ai-plan-form-view.ai-plan__body::after {
+  content: '출근 정보를 고르면\A 내가 계획을 알려줄게!';
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+  width: 360px;
+  min-height: 100px;
+  display: grid;
+  place-items: center;
+  padding: 14px 26px;
+  border: 5px solid #fff;
+  border-radius: 32px;
+  background: #fff;
+  color: #2d1b10;
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.45;
+  text-align: center;
+  white-space: pre;
+  box-shadow: 0 8px 18px rgba(70, 46, 23, .15);
+}
+
+#screen-ai-plan #ai-plan-form {
+  grid-column: 1;
+  grid-row: 2;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(180px, 1fr));
+  gap: 14px;
+  min-height: 0;
+  padding: 14px;
+  border: 5px solid rgba(255,255,255,.9);
+  border-radius: 24px;
+  background: rgba(255,248,221,.84);
+  box-shadow: 0 8px 0 rgba(188, 134, 48, .38), 0 18px 28px rgba(79, 53, 21, .12);
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field {
+  min-height: 180px;
+  padding: 16px 20px;
+  border-width: 3px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.86), rgba(255,255,255,.56)),
+    linear-gradient(180deg, #fffef8, #fff1d1);
+  box-shadow: 0 5px 0 rgba(175, 129, 54, .25), inset 0 0 0 2px rgba(255,255,255,.5);
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child {
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 16px;
+  font-size: 1.75rem;
+  color: #2b180e;
+}
+
+#screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child > i {
+  width: 82px;
+  height: 72px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: 3.5rem;
+  filter: drop-shadow(0 5px 2px rgba(89, 60, 25, .17));
+}
+
+#screen-ai-plan #ai-plan-form select,
+#screen-ai-plan #ai-plan-form .ai-plan__input-unit input {
+  height: 82px;
+  min-height: 82px;
+  border: 4px solid rgba(80, 145, 83, .7);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.9));
+  color: #1e4f36;
+  font-size: 1.62rem;
+  box-shadow: inset 0 -3px 0 rgba(92, 135, 72, .12);
+  appearance: none;
+}
+
+#screen-ai-plan #ai-plan-form select {
+  background:
+    linear-gradient(45deg, transparent 50%, currentColor 50%) calc(100% - 34px) 50% / 10px 10px no-repeat,
+    linear-gradient(135deg, currentColor 50%, transparent 50%) calc(100% - 26px) 50% / 10px 10px no-repeat,
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(255,255,255,.9));
+  padding-right: 56px;
+}
+
+#screen-ai-plan .ai-inline-clock {
+  width: min(320px, 100%);
+  grid-template-rows: 38px 78px 38px;
+}
+
+#screen-ai-plan .ai-inline-clock button {
+  min-height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #ffd35f, #f3a62a);
+  color: #9a4c00;
+  font-size: 1.32rem;
+}
+
+#screen-ai-plan .ai-inline-clock__value {
+  min-height: 78px;
+  border: 4px solid #f0b45b;
+  font-size: 3.1rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: auto auto repeat(3, minmax(82px, auto));
+  gap: 12px;
+  min-height: 0;
+  padding: 16px;
+  border: 5px solid #fff;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255,251,231,.96), rgba(255,238,181,.94));
+  box-shadow: 0 8px 0 rgba(202, 145, 36, .45), 0 18px 24px rgba(74, 49, 20, .13);
+}
+
+#screen-ai-plan .ai-plan__tip-coach {
+  width: 92px;
+  height: 92px;
+  font-size: 3rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > strong {
+  font-size: 1.5rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach) {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr);
+  align-items: center;
+  min-height: 82px;
+  padding: 10px 12px;
+  border: 3px solid rgba(228, 194, 116, .85);
+  border-radius: 16px;
+  background: rgba(255,255,255,.85);
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach)::before {
+  content: '⏱️';
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: #efe7ff;
+  font-size: 2rem;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div:nth-of-type(3)::before {
+  content: '⏰';
+  background: #e2f7e7;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div:nth-of-type(4)::before {
+  content: '🚌';
+  background: #e1f0ff;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div span,
+#screen-ai-plan .ai-plan__tip--automatic > div b {
+  grid-column: 2;
+}
+
+#screen-ai-plan .ai-plan__tip--automatic > div b {
+  font-size: 1.62rem;
+}
+
+#screen-ai-plan .ai-plan__footer {
+  grid-template-columns: minmax(0, 660px);
+  min-height: 112px;
+  padding: 10px 24px 16px;
+}
+
+#screen-ai-plan .ai-plan__form-message {
+  display: none;
+}
+
+#screen-ai-plan .ai-plan__calculate {
+  min-height: 90px;
+  border: 6px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #a75cf7, #6f2ecf);
+  color: #fff;
+  box-shadow: 0 9px 0 #42178c, 0 16px 26px rgba(66, 23, 140, .25);
+  font-size: 2.15rem;
+  text-shadow: 0 3px 0 rgba(0,0,0,.18);
+}
+
+#screen-ai-plan .ai-plan__calculate::before {
+  content: '🤖 ';
+}
+
+#screen-ai-plan .ai-plan__calculate:disabled {
+  background: linear-gradient(180deg, #c6cdd5, #8d98a4);
+  box-shadow: 0 7px 0 #6d7680;
+  opacity: .88;
+}
+
+#screen-ai-plan .ai-plan--result {
+  grid-template-rows: minmax(150px, auto) minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 124px;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(255, 232, 90, .72) 0 7px, transparent 8px),
+    radial-gradient(circle at 82% 18%, rgba(255, 232, 90, .68) 0 10px, transparent 11px);
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__header {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  align-items: center;
+  min-height: 150px;
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__header > div:nth-child(2) {
+  grid-column: 2;
+  justify-items: center;
+  padding: 8px 18px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__header > div:nth-child(2)::before {
+  content: 'AI 출근 계획이 완성됐어요!';
+  color: #fff;
+  font-size: 4rem;
+  text-align: center;
+  text-shadow:
+    -4px -4px 0 #122a63,
+    4px -4px 0 #122a63,
+    -4px 4px 0 #122a63,
+    4px 4px 0 #122a63,
+    0 8px 0 rgba(0,0,0,.22);
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__header::before,
+#screen-ai-plan .ai-plan--result .ai-plan__header::after {
+  display: none;
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__coach {
+  position: static;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: center;
+  width: 168px;
+  height: 168px;
+  margin: 0;
+}
+
+#screen-ai-plan .ai-plan--result .ai-plan__review {
+  display: none;
+}
+
+#screen-ai-plan #ai-plan-result.ai-plan__result:not([hidden]) {
+  display: grid;
+  grid-template-columns: minmax(520px, .86fr) minmax(620px, 1.14fr);
+  gap: 22px;
+  padding: 0 80px 8px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-coach,
+#screen-ai-plan #ai-plan-result .ai-plan__timeline {
+  border: 7px solid rgba(255,255,255,.96);
+  border-radius: 34px;
+  background: rgba(255,253,239,.94);
+  box-shadow: 0 10px 0 rgba(190, 137, 55, .34), 0 22px 28px rgba(69, 45, 17, .16);
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-coach {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 18px;
+  padding: 56px 26px 24px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-badge {
+  justify-self: center;
+  margin-top: -88px;
+  min-height: 54px;
+  padding: 10px 34px;
+  border: 5px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #198af2, #0c5eb8);
+  color: #fff;
+  font-size: 1.42rem;
+  box-shadow: 0 6px 0 #0a4587;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-character,
+#screen-ai-plan #ai-plan-result .ai-plan__result-speech {
+  display: none;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary::before {
+  content: '내 출근 시간 요약';
+  grid-column: 1 / -1;
+  justify-self: center;
+  min-height: 50px;
+  padding: 8px 34px;
+  border: 5px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2d91f0, #0b67c9);
+  color: #fff;
+  font-size: 1.62rem;
+  font-weight: 950;
+  box-shadow: 0 5px 0 #084b95;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card {
+  grid-template-columns: 84px minmax(0, 1fr);
+  min-height: 132px;
+  padding: 16px 20px;
+  border: 3px solid rgba(226, 195, 147, .8);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(251,245,229,.9));
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card i {
+  width: 76px;
+  height: 76px;
+  border: 0;
+  background: transparent;
+  font-size: 3.15rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card span {
+  font-size: 1.2rem;
+  color: #2e241f;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card strong {
+  color: #1c65b6;
+  font-size: 2.45rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card--wake strong {
+  color: #c72163;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card--depart strong,
+#screen-ai-plan #ai-plan-result .ai-plan__result-summary-card--bus strong {
+  color: #19703a;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline {
+  position: relative;
+  grid-template-rows: auto repeat(5, minmax(86px, auto));
+  gap: 12px;
+  padding: 48px 28px 24px;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title {
+  justify-self: center;
+  margin-top: -80px;
+  min-height: 58px;
+  padding: 10px 42px;
+  border: 5px solid rgba(255,255,255,.95);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #72c95b, #2ca644);
+  color: #fff;
+  box-shadow: 0 6px 0 #1f7830;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title span {
+  font-size: 1.65rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-title strong {
+  display: none;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step {
+  grid-template-columns: 68px 92px minmax(0, 1fr);
+  min-height: 86px;
+  gap: 16px;
+  padding: 10px 22px;
+  border: 3px solid rgba(195, 216, 161, .9);
+  border-radius: 20px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,.95), rgba(255,255,255,.72)),
+    linear-gradient(180deg, #fbfff4, #eef9df);
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-number {
+  grid-column: 1;
+  grid-row: 1;
+  width: 58px;
+  height: 58px;
+  border: 5px solid #fff;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #70d45a, #1c9b42);
+  color: #fff;
+  font-size: 2rem;
+  box-shadow: 0 5px 0 #13752f;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step time {
+  display: none;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > i {
+  grid-column: 2;
+  grid-row: 1;
+  width: 76px;
+  height: 76px;
+  border: 0;
+  background: transparent;
+  font-size: 3.15rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div {
+  grid-column: 3;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div strong {
+  color: #17100b;
+  font-size: 1.75rem;
+  line-height: 1.05;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div span {
+  color: #3f332a;
+  font-size: 1.12rem;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step--blue .ai-plan__timeline-number {
+  background: linear-gradient(180deg, #60bcff, #1277d4);
+  box-shadow: 0 5px 0 #075ca8;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step--purple .ai-plan__timeline-number {
+  background: linear-gradient(180deg, #aa70f2, #6b33bd);
+  box-shadow: 0 5px 0 #4a2189;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__timeline-step--orange .ai-plan__timeline-number {
+  background: linear-gradient(180deg, #ffb64d, #eb7c10);
+  box-shadow: 0 5px 0 #a84d06;
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-actions {
+  min-height: 112px;
+  padding: 10px 24px 16px;
+  background: linear-gradient(180deg, rgba(205, 145, 70, 0), rgba(179, 116, 48, .24) 28%, rgba(128, 164, 63, .62));
+}
+
+#screen-ai-plan #ai-plan-result .ai-plan__result-actions button {
+  min-height: 82px;
+  border: 6px solid #fff;
+  font-size: 1.9rem;
+  box-shadow: 0 8px 0 rgba(38, 85, 39, .5), 0 14px 22px rgba(49, 72, 37, .18);
+}
+
+#screen-ai-plan #ai-plan-result #btn-ai-plan-edit {
+  min-width: 330px;
+  background: linear-gradient(180deg, #ffffff, #e8f1ff);
+  color: #174b91;
+  box-shadow: 0 7px 0 #9bb5d5;
+}
+
+#screen-ai-plan #ai-plan-result #btn-ai-plan-continue {
+  min-width: 560px;
+  background: linear-gradient(180deg, #42d85b, #1a9b35);
+  color: #fff;
+  box-shadow: 0 8px 0 #126b25, 0 16px 28px rgba(25, 133, 48, .28);
+}
+
+@media (max-width: 1366px) and (min-width: 1000px) {
+  #screen-ai-plan .ai-plan {
+    grid-template-rows: 86px minmax(134px, auto) minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px 14px 94px;
+  }
+
+  #screen-ai-plan .ai-plan__header {
+    grid-template-columns: minmax(320px, 1fr) repeat(2, minmax(178px, .7fr)) minmax(178px, .68fr);
+    gap: 8px;
+  }
+
+  #screen-ai-plan .ai-plan__header > div:nth-child(2),
+  #screen-ai-plan .ai-plan__header::before,
+  #screen-ai-plan .ai-plan__header::after,
+  #screen-ai-plan .ai-plan__review {
+    min-height: 72px;
+  }
+
+  #screen-ai-plan .ai-plan__header > div:nth-child(2)::before {
+    font-size: 1.45rem;
+  }
+
+  #screen-ai-plan .ai-plan__header::before,
+  #screen-ai-plan .ai-plan__header::after {
+    font-size: 1.08rem;
+  }
+
+  #screen-ai-plan #ai-plan-form-view.ai-plan__body {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    grid-template-rows: 118px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  #screen-ai-plan #ai-plan-form-view.ai-plan__body::before {
+    min-height: 112px;
+    width: min(690px, calc(100% - 370px));
+    padding-left: 24px;
+    font-size: 2.35rem;
+  }
+
+  #screen-ai-plan #ai-plan-form-view.ai-plan__body::after {
+    width: 285px;
+    min-height: 76px;
+    padding: 10px 16px;
+    font-size: 1.08rem;
+  }
+
+  #screen-ai-plan .ai-plan__coach {
+    width: 104px;
+    height: 104px;
+    top: 96px;
+    right: 374px;
+  }
+
+  #screen-ai-plan .ai-plan__coach::before {
+    width: 64px;
+    height: 42px;
+  }
+
+  #screen-ai-plan #ai-plan-form {
+    grid-template-rows: repeat(2, minmax(146px, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field {
+    min-height: 146px;
+    padding: 9px 12px;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child {
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 8px;
+    font-size: 1.24rem;
+  }
+
+  #screen-ai-plan #ai-plan-form .ai-plan__field > span:first-child > i {
+    width: 54px;
+    height: 48px;
+    font-size: 2.35rem;
+  }
+
+  #screen-ai-plan #ai-plan-form select,
+  #screen-ai-plan #ai-plan-form .ai-plan__input-unit input {
+    height: 58px;
+    min-height: 58px;
+    font-size: 1.2rem;
+  }
+
+  #screen-ai-plan .ai-inline-clock {
+    grid-template-rows: 30px 58px 30px;
+    gap: 4px 8px;
+  }
+
+  #screen-ai-plan .ai-inline-clock button {
+    min-height: 30px;
+    font-size: 1rem;
+  }
+
+  #screen-ai-plan .ai-inline-clock__value {
+    min-height: 58px;
+    font-size: 2.2rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  #screen-ai-plan .ai-plan__tip-coach {
+    width: 54px;
+    height: 54px;
+    font-size: 2rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > strong {
+    font-size: 1.08rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach) {
+    grid-template-columns: 46px minmax(0, 1fr);
+    min-height: 52px;
+    padding: 5px 7px;
+    font-size: .86rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > div:not(.ai-plan__tip-coach)::before {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    font-size: 1.35rem;
+  }
+
+  #screen-ai-plan .ai-plan__tip--automatic > div b {
+    font-size: 1.18rem;
+  }
+
+  #screen-ai-plan .ai-plan__footer {
+    min-height: 86px;
+    padding: 6px 16px 10px;
+  }
+
+  #screen-ai-plan .ai-plan__calculate {
+    min-height: 70px;
+    font-size: 1.5rem;
+  }
+
+  #screen-ai-plan .ai-plan--result {
+    grid-template-rows: 112px minmax(0, 1fr);
+    padding-bottom: 96px;
+  }
+
+  #screen-ai-plan .ai-plan--result .ai-plan__header {
+    grid-template-columns: 132px minmax(0, 1fr);
+    min-height: 112px;
+  }
+
+  #screen-ai-plan .ai-plan--result .ai-plan__header > div:nth-child(2)::before {
+    font-size: 2.8rem;
+  }
+
+  #screen-ai-plan .ai-plan--result .ai-plan__coach {
+    position: static;
+    width: 112px;
+    height: 112px;
+  }
+
+  #screen-ai-plan #ai-plan-result.ai-plan__result:not([hidden]) {
+    grid-template-columns: minmax(390px, .86fr) minmax(500px, 1.14fr);
+    gap: 10px;
+    padding: 0 18px 0;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-coach {
+    padding: 42px 14px 14px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary {
+    gap: 8px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card {
+    grid-template-columns: 52px minmax(0, 1fr);
+    min-height: 96px;
+    padding: 9px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card i {
+    width: 48px;
+    height: 48px;
+    font-size: 2rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card span {
+    font-size: .9rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-summary-card strong {
+    font-size: 1.65rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline {
+    grid-template-rows: auto repeat(5, minmax(60px, auto));
+    gap: 6px;
+    padding: 38px 12px 12px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-title {
+    min-height: 42px;
+    margin-top: -61px;
+    padding: 6px 22px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step {
+    grid-template-columns: 44px 54px minmax(0, 1fr);
+    min-height: 60px;
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.35rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > i {
+    width: 50px;
+    height: 50px;
+    font-size: 2rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div strong {
+    font-size: 1.08rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__timeline-step > div span {
+    font-size: .82rem;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-actions {
+    min-height: 86px;
+  }
+
+  #screen-ai-plan #ai-plan-result .ai-plan__result-actions button {
+    min-height: 68px;
+    font-size: 1.38rem;
+  }
+}

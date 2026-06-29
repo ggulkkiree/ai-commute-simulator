@@ -68,6 +68,12 @@ function cacheDom() {
     resultReason:      document.getElementById('result-reason'),
     resultPrimaryProblem: document.getElementById('result-primary-problem'),
     resultPrimaryRetry: document.getElementById('result-primary-retry'),
+    resultGoodList:    document.getElementById('result-good-list'),
+    resultStars:       document.getElementById('result-stars'),
+    resultStatusText:  document.getElementById('result-status-text'),
+    resultHudTargetTime: document.getElementById('result-hud-target-time'),
+    resultHudArrivalTime: document.getElementById('result-hud-arrival-time'),
+    resultTeacherNote: document.getElementById('result-teacher-note'),
     btnResultTts:      document.getElementById('btn-result-tts'),
     resultContainer:   document.getElementById('result-container'),
     resultCutsceneOverlay: document.getElementById('result-cutscene-overlay'),
@@ -104,8 +110,10 @@ function cacheDom() {
     panelSummary:      document.getElementById('panel-summary'),
     reportDetail:      document.getElementById('report-detail'),
     reportSummary:     document.getElementById('report-summary'),
+    reportTodayDate:   document.getElementById('report-today-date'),
     btnPrintReport:    document.getElementById('btn-print-report'),
     btnReportBack:     document.getElementById('btn-report-back'),
+    btnReportRetry:    document.getElementById('btn-report-retry'),
     btnReportHome:     document.getElementById('btn-report-home'),
 
     // Feedback overlay
@@ -1155,35 +1163,43 @@ function renderResultScreen(judgment) {
   // Badge configuration
   var badgeConfig = {
     success: {
-      icon: '🎉',
+      icon: '⭐',
       title: '출근 성공!',
-      className: 'result-badge--success'
+      className: 'result-badge--success',
+      statusText: '출근 성공!',
+      speech: '시간에 맞춰 잘 도착했어요!',
+      teacherNote: '계획대로 잘 실천했어요! 내일도 화이팅!',
+      stars: 3
     },
     late: {
-      icon: '😰',
-      title: '지각!',
-      className: 'result-badge--late'
+      icon: '⚠️',
+      title: '조금 늦었어요',
+      className: 'result-badge--late',
+      statusText: '조금 늦었어요',
+      speech: '내일은 조금 더 일찍 출발해요.',
+      teacherNote: '다시 도전할 수 있어요. 출발 시간을 기억해요.',
+      stars: 2
     },
     fail: {
-      icon: '😢',
-      title: '출근 실패',
-      className: 'result-badge--fail'
+      icon: '🔁',
+      title: '다시 연습해봐요',
+      className: 'result-badge--fail',
+      statusText: '다시 연습',
+      speech: '출근 순서를 다시 확인해볼까요?',
+      teacherNote: '순서를 하나씩 다시 연습하면 더 좋아져요.',
+      stars: 1
     }
   };
 
   var config = badgeConfig[judgment] || badgeConfig.fail;
   var primary = gameState.feedback || {};
   var level = gameState.student && gameState.student.level ? gameState.student.level : '나';
-  var reasonText = judgment === 'success'
-    ? '시간에 맞게 본앤하이리에 도착했어요.'
-    : judgment === 'late'
-      ? '본앤하이리에 도착했지만 출근 시간보다 조금 늦었어요.'
-      : '오늘은 출근 가능 시간을 지나 출근을 마치지 못했어요.';
-  var problemText = primary.primaryMessage || '오늘은 아쉬운 점 없이 잘 준비했어요.';
-  var retryText = primary.retryMessage || '내일도 오늘처럼 차근차근 준비해요.';
+  var reasonText = config.speech;
+  var problemText = primary.primaryMessage || '출근 과정을 한 번 더 확인해요.';
+  var retryText = primary.retryMessage || '내일은 차근차근 다시 해봐요.';
 
   if (level === '다') {
-    reasonText = judgment === 'success' ? '시간에 맞게 도착했어요.' : judgment === 'late' ? '조금 늦었어요.' : '오늘은 출근하지 못했어요.';
+    reasonText = judgment === 'success' ? '잘 도착했어요.' : judgment === 'late' ? '조금 늦었어요.' : '다시 연습해요.';
     problemText = getShortResultText(primary.primaryTag, false);
     retryText = getShortResultText(primary.primaryTag, true);
   }
@@ -1191,7 +1207,11 @@ function renderResultScreen(judgment) {
   if (dom.resultReason) dom.resultReason.textContent = reasonText;
   if (dom.resultPrimaryProblem) dom.resultPrimaryProblem.textContent = problemText;
   if (dom.resultPrimaryRetry) dom.resultPrimaryRetry.textContent = retryText;
-  gameState.resultSpeech = config.title + '. ' + reasonText + ' 아쉬운 점. ' + problemText + ' 내일 다시 해볼 점. ' + retryText;
+  if (dom.resultStatusText) dom.resultStatusText.textContent = config.statusText;
+  if (dom.resultTeacherNote) dom.resultTeacherNote.textContent = config.teacherNote;
+  if (dom.resultStars) dom.resultStars.innerHTML = buildResultStars(config.stars);
+  if (dom.resultGoodList) dom.resultGoodList.innerHTML = buildResultGoodList(judgment);
+  gameState.resultSpeech = config.title + '. ' + reasonText + ' 아쉬운 점. ' + problemText + ' 내일 해볼 점. ' + retryText;
 
   // Set badge
   dom.resultBadge.className = 'result-badge ' + config.className;
@@ -1209,15 +1229,18 @@ function renderResultScreen(judgment) {
   // Details
   if (dom.resultStudentName) {
     dom.resultStudentName.textContent =
-      (getStudentDisplayEmoji(gameState.student) || '😊') + ' ' + gameState.student.name;
+      (getStudentDisplayEmoji(gameState.student) || '🙂') + ' ' + gameState.student.name;
   }
   if (dom.resultWorkStartTime) {
     dom.resultWorkStartTime.textContent = formatTime(getWorkStartTime());
   }
+  if (dom.resultHudTargetTime) {
+    dom.resultHudTargetTime.textContent = formatTime(getWorkStartTime());
+  }
   if (dom.resultAlarmTime) {
     var resultAlarmTime = gameState.evePrep ? gameState.evePrep.alarmTime : null;
     dom.resultAlarmTime.textContent = resultAlarmTime === -1 || resultAlarmTime === null
-      ? '설정하지 않음'
+      ? '알람 없음'
       : formatTime(resultAlarmTime);
   }
   if (dom.resultStartTime) dom.resultStartTime.textContent = formatTime(gameState.commute.wakeTime || gameState.startTime);
@@ -1228,7 +1251,7 @@ function renderResultScreen(judgment) {
   }
   if (dom.resultBusBoardingTime) {
     if (gameState.commute.transportMode === 'taxi') {
-      dom.resultBusBoardingTime.textContent = '택시 이용';
+      dom.resultBusBoardingTime.textContent = '택시 이동';
     } else {
       dom.resultBusBoardingTime.textContent = gameState.commute.busBoardingTime !== null && gameState.commute.busBoardingTime !== undefined
         ? formatTime(gameState.commute.busBoardingTime)
@@ -1236,15 +1259,16 @@ function renderResultScreen(judgment) {
     }
   }
   if (dom.resultArrivalTime) dom.resultArrivalTime.textContent = formatTime(gameState.time.current);
+  if (dom.resultHudArrivalTime) dom.resultHudArrivalTime.textContent = formatTime(gameState.time.current);
 
   var totalMinutes = gameState.time.current - gameState.startTime;
   if (dom.resultTotalTime) dom.resultTotalTime.textContent = totalMinutes + '분';
 
-  // Bag status: 오늘 필요한 준비물 기준으로 계산
+  // Bag status: required items checked count
   var requiredBagStatus = getRequiredItemsStatus();
   var checkedCount = requiredBagStatus.checked;
   var totalCount = requiredBagStatus.total;
-  if (dom.resultBagStatus) dom.resultBagStatus.textContent = checkedCount + '/' + totalCount + ' 준비 완료';
+  if (dom.resultBagStatus) dom.resultBagStatus.textContent = checkedCount + '/' + totalCount + '개 챙김';
 
   // Timeline
   renderTimeline();
@@ -1258,11 +1282,11 @@ function renderResultScreen(judgment) {
 
   // 1. AI Analysis Content
   var analysisHtml = '<div class="ai-analysis-comments" style="display:flex; flex-direction:column; gap:var(--space-sm);">';
-  analysisHtml += '  <p class="ai-analysis-comment">🤖 <strong>출근 정보 비교:</strong> ' + buildResultAiSummary(judgment, getRequiredItemsStatus(), (gameState.commute && gameState.commute.missedBusTimes) || []) + '</p>';
+  analysisHtml += '  <p class="ai-analysis-comment">📌 <strong>오늘 출근 요약:</strong> ' + buildResultAiSummary(judgment, getRequiredItemsStatus(), (gameState.commute && gameState.commute.missedBusTimes) || []) + '</p>';
   analysisHtml += '  <p class="ai-analysis-comment">⏰ <strong>기상 준비:</strong> ' + analysis.domains.wake.feedback + '</p>';
-  analysisHtml += '  <p class="ai-analysis-comment">🎒 <strong>외출 준비:</strong> ' + analysis.domains.prepare.feedback + '</p>';
-  analysisHtml += '  <p class="ai-analysis-comment">🚌 <strong>이동 대처:</strong> ' + analysis.domains.commute.feedback + '</p>';
-  analysisHtml += '  <p class="ai-analysis-comment">🤝 <strong>사회성/안전:</strong> ' + analysis.domains.social.feedback + '</p>';
+  analysisHtml += '  <p class="ai-analysis-comment">🎒 <strong>준비 과정:</strong> ' + analysis.domains.prepare.feedback + '</p>';
+  analysisHtml += '  <p class="ai-analysis-comment">🚌 <strong>이동 과정:</strong> ' + analysis.domains.commute.feedback + '</p>';
+  analysisHtml += '  <p class="ai-analysis-comment">💬 <strong>사회성/안전:</strong> ' + analysis.domains.social.feedback + '</p>';
   analysisHtml += '</div>';
   if (dom.aiAnalysisContent) dom.aiAnalysisContent.innerHTML = analysisHtml;
 
@@ -1280,6 +1304,25 @@ function renderResultScreen(judgment) {
   }
 
   if (level === '다') speakResultText(gameState.resultSpeech);
+}
+
+function buildResultStars(count) {
+  var html = '';
+  for (var i = 0; i < 3; i++) {
+    html += '<span class="' + (i < count ? 'is-filled' : 'is-empty') + '" aria-hidden="true">★</span>';
+  }
+  return html;
+}
+
+function buildResultGoodList(judgment) {
+  var items = judgment === 'success'
+    ? ['알람을 잘 맞췄어요', '준비물을 챙겼어요', '200번 버스를 탔어요']
+    : judgment === 'late'
+      ? ['끝까지 이동했어요', '버스를 잘 확인했어요', '회사까지 잘 왔어요']
+      : ['출근 순서를 확인했어요', '다시 연습할 수 있어요', '내일 다시 해볼 수 있어요'];
+  return items.map(function(item) {
+    return '<li><span aria-hidden="true">✓</span>' + item + '</li>';
+  }).join('');
 }
 
 function getShortResultText(tag, retry) {
@@ -1372,6 +1415,14 @@ function renderReflections() {
    Report Screen
    ============================================================ */
 function renderReportScreen() {
+  if (dom.reportTodayDate) {
+    var today = new Date();
+    var weekday = ['일', '월', '화', '수', '목', '금', '토'][today.getDay()];
+    dom.reportTodayDate.textContent = '📅 ' + today.getFullYear() + '.' +
+      String(today.getMonth() + 1).padStart(2, '0') + '.' +
+      String(today.getDate()).padStart(2, '0') + ' (' + weekday + ')';
+  }
+
   // Individual tab
   if (typeof generateDetailReport === 'function') {
     var detailHtml = generateDetailReport(gameState);
@@ -1869,6 +1920,13 @@ function bindEvents() {
   // Report back / home
   if (dom.btnReportBack) dom.btnReportBack.addEventListener('click', function() {
     showScreen('screen-result');
+  });
+
+  if (dom.btnReportRetry) dom.btnReportRetry.addEventListener('click', function() {
+    if (gameState.student) {
+      initGame(gameState.student);
+      startGame();
+    }
   });
 
   if (dom.btnReportHome) dom.btnReportHome.addEventListener('click', function() {

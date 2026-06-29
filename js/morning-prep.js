@@ -513,6 +513,8 @@
       button.type = 'button';
       button.draggable = true;
       button.className = 'morning-game__world-item morning-game__world-item--' + item.place;
+      button.classList.add('morning-game__world-item--type-' + item.type);
+      if (item.required) button.classList.add('is-required');
       button.dataset.bagItem = item.key;
       button.innerHTML =
         '<span class="morning-game__item-object morning-game__item-object--' + item.visual + '">' +

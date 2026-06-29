@@ -285,7 +285,7 @@
         '<div class="ai-plan__result-speech">' +
           '<span>출근 계획 요약</span>' +
           '<h2>오늘의 출근 계획</h2>' +
-          '<p>네 가지 시간을 차례로 확인해요.</p>' +
+          '<p>이제 이대로 준비하면 돼요!</p>' +
         '</div>' +
         '<div class="ai-plan__result-summary">' +
           resultSummary('⏰', '일어날 시간', timeText(values.wake), 'wake') +
@@ -305,7 +305,7 @@
       '</div>' +
       '<footer class="ai-plan__result-actions">' +
         '<button id="btn-ai-plan-edit" type="button">↻ 입력 다시 보기</button>' +
-        '<button id="btn-ai-plan-continue" type="button">🎒 전날 가방 챙기기</button>' +
+        '<button id="btn-ai-plan-continue" type="button">🚀 전날 준비 시작하기</button>' +
       '</footer>';
     document.getElementById('btn-ai-plan-edit').addEventListener('click', function () {
       dom.plan.classList.remove('ai-plan--result');
