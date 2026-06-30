@@ -1,0 +1,58 @@
+/* ============================================================
+   Design tokens
+   Shared values only. Screen-specific placement stays in screens/.
+   ============================================================ */
+
+:root {
+  --color-primary: #2E7D32;
+  --color-primary-light: #4CAF50;
+  --color-primary-dark: #1B5E20;
+  --color-primary-surface: #E8F5E9;
+  --color-success: #43A047;
+  --color-warning: #FF9800;
+  --color-danger: #E53935;
+  --color-text-main: #212121;
+  --color-text-secondary: #616161;
+  --color-text-inverse: #FFFFFF;
+  --color-surface: #FFFFFF;
+  --color-app-bg: #FFF8E1;
+
+  --font-family-main: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.85rem;
+  --font-size-sm: 0.95rem;
+  --font-size-base: 1.2rem;
+  --font-size-lg: 1.35rem;
+  --font-size-xl: 1.6rem;
+  --font-size-2xl: 2.2rem;
+  --font-size-3xl: 2.8rem;
+
+  --space-xs: 6px;
+  --space-sm: 10px;
+  --space-md: 14px;
+  --space-lg: 18px;
+  --space-xl: 26px;
+  --space-2xl: 36px;
+  --space-3xl: 52px;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-card: 18px;
+  --radius-full: 999px;
+
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+  --shadow-md: 0 6px 16px rgba(0,0,0,0.1);
+  --shadow-card: 0 10px 30px rgba(0,0,0,0.12);
+  --shadow-xl: 0 16px 44px rgba(0,0,0,0.16);
+
+  --z-background: 0;
+  --z-content: 10;
+  --z-floating: 50;
+  --z-modal: 100;
+  --z-toast: 300;
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s ease;
+  --transition-slow: 0.4s ease;
+}

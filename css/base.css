@@ -1,0 +1,5 @@
+/* ============================================================
+   Base layer scaffold
+   Phase 1 keeps existing rules in css/style.css for visual parity.
+   Move only global reset/accessibility rules here in a later scoped pass.
+   ============================================================ */

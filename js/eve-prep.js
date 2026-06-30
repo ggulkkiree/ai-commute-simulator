@@ -54,15 +54,15 @@
     var level = gameState.student && gameState.student.level;
     var workStartTime = (gameState.todayInfo && gameState.todayInfo.workStartTime) || 540;
     if (level === '가') {
-      if (dom.alarmTitle) dom.alarmTitle.textContent = '알람 시간 직접 설정';
+      if (dom.alarmTitle) dom.alarmTitle.innerHTML = '몇 시에<br>일어나야 할까?';
       if (dom.alarmDescription) {
-        dom.alarmDescription.textContent = '출근 시간과 필요한 시간을 보고 직접 정해 보세요.';
+        dom.alarmDescription.textContent = '출근 시간을 생각해서 알람을 맞춰요!';
       }
       renderGaAlarmSetter(workStartTime);
       return;
     }
-    if (dom.alarmTitle) dom.alarmTitle.textContent = '알람 맞추기';
-    if (dom.alarmDescription) dom.alarmDescription.textContent = '내일 일어날 시간을 선택하세요.';
+    if (dom.alarmTitle) dom.alarmTitle.innerHTML = '몇 시에<br>일어나야 할까?';
+    if (dom.alarmDescription) dom.alarmDescription.textContent = '출근 시간을 생각해서 알람을 맞춰요!';
 
     var plannedWakeTime = getPlannedWakeTime(workStartTime);
     var options = [
@@ -426,7 +426,7 @@
     if (itemName === 'phone') emoji = '📱';
     if (itemName === 'umbrella') emoji = '☔';
     if (itemName === 'waterBottle') emoji = '💧';
-    if (itemName === 'handFan') emoji = '🪭';
+    if (itemName === 'handFan') emoji = '🌬️';
     if (itemName === 'gloves') emoji = '🧤';
     if (itemName === 'outerwear') emoji = '🧥';
     if (itemName === 'mask') emoji = '😷';
@@ -438,6 +438,7 @@
     
     var div = document.createElement('div');
     div.className = 'packed-item-icon';
+    div.setAttribute('data-item', itemName);
     if (isRequired) div.classList.add('is-required');
     else if (isTrap) div.classList.add('is-trap');
     else div.classList.add('is-optional');
@@ -487,7 +488,7 @@
       dom.bagRequiredList.innerHTML = requiredKeys.map(function(key) {
         var item = bag[key];
         var checked = packedRequired.indexOf(key) > -1;
-        return '<span class="' + (checked ? 'is-packed' : '') + '">' +
+        return '<span class="' + (checked ? 'is-packed' : '') + '" data-item="' + key + '">' +
           '<i aria-hidden="true">' + (item.icon || '🎒') + '</i>' +
           '<b>' + item.name + '</b>' +
           '<em aria-hidden="true">' + (checked ? '✓' : '○') + '</em></span>';
@@ -754,6 +755,7 @@
 
     var div = document.createElement('div');
     div.className = 'packed-item-icon';
+    div.setAttribute('data-item', itemName);
     div.classList.add('is-required');
     div.textContent = emoji;
     div.title = itemNameKr;

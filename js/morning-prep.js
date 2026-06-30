@@ -18,6 +18,8 @@
     dom.alarmTime = document.getElementById('alarm-ring-time');
     dom.alarmCurrentTime = document.getElementById('alarm-current-time');
     dom.alarmSceneClock = document.getElementById('alarm-scene-clock');
+    dom.alarmHourHand = document.getElementById('alarm-clock-hour-hand');
+    dom.alarmMinuteHand = document.getElementById('alarm-clock-minute-hand');
     dom.snoozeFeedback = document.getElementById('alarm-snooze-feedback');
     dom.wakeNow = document.getElementById('btn-alarm-wake-now');
     dom.snooze = document.getElementById('btn-alarm-snooze');
@@ -110,6 +112,7 @@
       gameState.evePrep.alarmTime = alarm + 10;
       gameState.alarmTime = alarm + 10;
       gameState.time.current = alarm + 10;
+      renderMorningAlarmTime(alarm + 10);
       if (dom.snoozeFeedback) dom.snoozeFeedback.textContent = '10분 더 잤어요.';
       if (typeof startAlarmSleepFlow === 'function') {
         window.setTimeout(function () {
@@ -156,6 +159,26 @@
     var hours = Math.floor(minutes / 60);
     var mins = minutes % 60;
     return String(hours).padStart(2, '0') + ':' + String(mins).padStart(2, '0');
+  }
+
+  function getAnalogClockAngles(minutes) {
+    var normalized = ((minutes % 1440) + 1440) % 1440;
+    var hour = Math.floor(normalized / 60) % 12;
+    var minute = normalized % 60;
+    return {
+      hour: hour * 30 + minute * 0.5,
+      minute: minute * 6
+    };
+  }
+
+  function renderMorningAlarmTime(minutes) {
+    var timeText = formatGameTime(minutes);
+    if (dom.alarmTime) dom.alarmTime.textContent = timeText;
+    if (dom.alarmCurrentTime) dom.alarmCurrentTime.textContent = timeText;
+    if (dom.alarmSceneClock) dom.alarmSceneClock.textContent = timeText;
+    var angles = getAnalogClockAngles(minutes);
+    if (dom.alarmHourHand) dom.alarmHourHand.style.transform = 'rotate(' + angles.hour + 'deg)';
+    if (dom.alarmMinuteHand) dom.alarmMinuteHand.style.transform = 'rotate(' + angles.minute + 'deg)';
   }
 
   function updateTime() {
@@ -769,9 +792,7 @@
     gameState.evePrep.alarmTime = alarm;
     gameState.alarmTime = alarm;
     gameState.time.current = alarm;
-    dom.alarmTime.textContent = formatGameTime(alarm);
-    if (dom.alarmCurrentTime) dom.alarmCurrentTime.textContent = formatGameTime(alarm);
-    if (dom.alarmSceneClock) dom.alarmSceneClock.textContent = formatGameTime(alarm);
+    renderMorningAlarmTime(alarm);
     if (dom.snoozeFeedback) dom.snoozeFeedback.textContent = '';
     if (dom.snooze) {
       var snoozed = gameState.evePrep && (gameState.evePrep.snoozeCount || 0) >= 1;

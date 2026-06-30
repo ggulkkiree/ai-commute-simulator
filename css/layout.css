@@ -1,0 +1,5 @@
+/* ============================================================
+   Layout layer scaffold
+   Phase 1 keeps existing viewport/layout overrides in css/wide_vn.css
+   to avoid cascade changes. Move common wrappers here one screen at a time.
+   ============================================================ */

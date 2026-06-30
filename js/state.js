@@ -35,7 +35,7 @@ var itemCatalog = {
   phone: { name: '스마트폰', icon: '📱', location: 'home', category: 'base' },
   waterBottle: { name: '물병', icon: '🧴', location: 'home', category: 'base' },
   umbrella: { name: '우산', icon: '🌂', location: 'home', category: 'weather' },
-  handFan: { name: '손선풍기', icon: '🪭', location: 'home', category: 'weather' },
+  handFan: { name: '손선풍기', icon: '🌬️', location: 'home', category: 'weather' },
   gloves: { name: '장갑', icon: '🧤', location: 'home', category: 'weather' },
   outerwear: { name: '겉옷', icon: '🧥', location: 'home', category: 'weather' },
   mask: { name: '마스크', icon: '😷', location: 'home', category: 'weather' },

@@ -9,11 +9,34 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components/buttons.css">
+  <link rel="stylesheet" href="css/components/cards.css">
+  <link rel="stylesheet" href="css/components/speech-bubbles.css">
+  <link rel="stylesheet" href="css/components/hud.css">
+  <link rel="stylesheet" href="css/components/modals.css">
+  <link rel="stylesheet" href="css/components/forms.css">
+  <link rel="stylesheet" href="css/components/progress.css">
+  <link rel="stylesheet" href="css/components/characters.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/wide_vn.css">
   <link rel="stylesheet" href="css/route_mission_game.css">
   <link rel="stylesheet" href="css/ai_plan_game.css">
   <link rel="stylesheet" href="css/home_game.css">
+  <link rel="stylesheet" href="css/screens/s003-route-info.css">
+  <link rel="stylesheet" href="css/screens/s004-ai-input.css">
+  <link rel="stylesheet" href="css/screens/s005-ai-result.css">
+  <link rel="stylesheet" href="css/screens/s006-night-bag.css">
+  <link rel="stylesheet" href="css/screens/s008-alarm.css">
+  <link rel="stylesheet" href="css/screens/s009-wakeup.css">
+  <link rel="stylesheet" href="css/screens/s010-morning-prep.css">
+  <link rel="stylesheet" href="css/screens/s012-bag.css">
+  <link rel="stylesheet" href="css/screens/s018-map.css">
+  <link rel="stylesheet" href="css/screens/s020-result.css">
+  <link rel="stylesheet" href="css/screens/s021-teacher-report.css">
+  <link rel="stylesheet" href="css/screens/s001-home.css">
 </head>
 <body>
 
@@ -39,7 +62,8 @@
 
   <main id="app-container">
 
-    <section id="screen-main" class="screen active" aria-label="학생 선택 화면">
+    <section id="screen-main" class="screen screen-s001 active" aria-label="학생 선택 화면">
+      <img class="home-bg-image" src="assets/images/s001-main-background-clean.png" alt="" aria-hidden="true">
       <div class="home-sky-deco home-sky-deco--sun" aria-hidden="true">☀</div>
       <div class="home-sky-deco home-sky-deco--cloud-one" aria-hidden="true"></div>
       <div class="home-sky-deco home-sky-deco--cloud-two" aria-hidden="true"></div>
@@ -104,7 +128,7 @@
       </div>
     </div>
 
-    <section id="screen-duty-intro" class="screen" aria-label="오늘의 직무 소개">
+    <section id="screen-duty-intro" class="screen screen-s002" aria-label="오늘의 직무 소개">
       <div class="duty-intro-container">
         <div class="duty-intro__photo-wrapper">
           <img id="duty-intro-photo" class="duty-intro__photo" src="" alt="본앤하이리 작업장">
@@ -119,7 +143,7 @@
       </div>
     </section>
 
-    <section id="screen-briefing" class="screen" aria-label="AI 출근 정보 화면">
+    <section id="screen-briefing" class="screen screen-s003" aria-label="AI 출근 정보 화면">
       <div class="route-mission">
         <div id="briefing-content-area" class="route-mission__content"></div>
         <button id="btn-briefing-start" class="route-mission__next" aria-label="AI 출근 계획 입력">
@@ -128,7 +152,7 @@
       </div>
     </section>
 
-    <section id="screen-ai-plan" class="screen" aria-label="AI 출근 계획 입력 화면">
+    <section id="screen-ai-plan" class="screen screen-s004 screen-s005" aria-label="AI 출근 계획 입력 화면">
       <div class="ai-plan">
         <header class="ai-plan__header">
           <div class="ai-plan__coach" aria-hidden="true">🤖</div>
@@ -228,7 +252,7 @@
       </div>
     </div>
 
-    <section id="screen-planning" class="screen" aria-label="출근 계획 화면">
+    <section id="screen-planning" class="screen screen-s003" aria-label="출근 계획 화면">
       <div class="planning-container">
         <h2>출근 계획 세우기</h2>
         <div class="planning-calc">
@@ -298,7 +322,7 @@
       </div>
     </section>
 
-    <section id="screen-morning-alarm" class="screen" aria-label="아침 알람 화면">
+    <section id="screen-morning-alarm" class="screen screen-s009" aria-label="아침 알람 화면">
       <div class="morning-alarm-game">
         <img class="morning-alarm-game__scene" src="assets/images/alarm-ringing-morning-clean.png" alt="아침 햇살이 들어오는 방에서 캐릭터가 깨어나는 모습">
         <div class="morning-alarm-game__shade" aria-hidden="true"></div>
@@ -307,6 +331,21 @@
           <strong id="alarm-ring-time">08:30</strong>
         </header>
         <div class="morning-alarm-game__scene-clock" aria-label="설정한 알람 시각">
+          <svg class="morning-alarm-game__analog-clock" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="morning-alarm-game__clock-bell morning-alarm-game__clock-bell--left" cx="34" cy="16" r="13"></circle>
+            <circle class="morning-alarm-game__clock-bell morning-alarm-game__clock-bell--right" cx="86" cy="16" r="13"></circle>
+            <circle class="morning-alarm-game__clock-face" cx="60" cy="62" r="43"></circle>
+            <g class="morning-alarm-game__clock-marks">
+              <line x1="60" y1="24" x2="60" y2="31"></line>
+              <line x1="98" y1="62" x2="91" y2="62"></line>
+              <line x1="60" y1="100" x2="60" y2="93"></line>
+              <line x1="22" y1="62" x2="29" y2="62"></line>
+            </g>
+            <line id="alarm-clock-hour-hand" class="morning-alarm-game__clock-hand morning-alarm-game__clock-hand--hour" x1="60" y1="62" x2="60" y2="42"></line>
+            <line id="alarm-clock-minute-hand" class="morning-alarm-game__clock-hand morning-alarm-game__clock-hand--minute" x1="60" y1="62" x2="60" y2="30"></line>
+            <circle class="morning-alarm-game__clock-pin" cx="60" cy="62" r="4"></circle>
+            <path class="morning-alarm-game__clock-leg" d="M43 101l-11 13M77 101l11 13"></path>
+          </svg>
           <span>⏰ 알람 시각</span>
           <strong id="alarm-scene-clock">08:30</strong>
         </div>
@@ -315,7 +354,7 @@
           <b>띠리리리!</b>
         </div>
         <section class="morning-alarm-game__choice" aria-labelledby="morning-alarm-question">
-          <p>현재 시각 <strong id="alarm-current-time">08:30</strong>입니다.</p>
+          <p><strong id="alarm-current-time">08:30</strong>이에요!</p>
           <h2 id="morning-alarm-question">일어날까요?</h2>
           <div class="alarm-choices">
             <button id="btn-alarm-wake-now" class="btn-alarm-action btn-alarm-action--wake" type="button">일어나기</button>
@@ -326,7 +365,7 @@
       </div>
     </section>
 
-    <section id="screen-morning-prep" class="screen" aria-label="아침 준비 게임 화면">
+    <section id="screen-morning-prep" class="screen screen-s010" aria-label="아침 준비 게임 화면">
       <div class="morning-game">
         <img id="morning-scene-image" class="morning-game__scene" src="assets/images/morning-room-game-clean.png" alt="잠옷을 입은 캐릭터가 서 있는 아침 방">
         <div class="morning-game__shade" aria-hidden="true"></div>
@@ -383,7 +422,7 @@
       </div>
     </section>
 
-    <section id="screen-morning-prep-legacy" class="screen" aria-label="기존 아침 준비 화면" hidden aria-hidden="true">
+    <section id="screen-morning-prep-legacy" class="screen screen-s012" aria-label="기존 아침 준비 화면" hidden aria-hidden="true">
       <div class="morning-prep-fullscreen">
         <div class="morning-bg-layer">
           <img id="morning-bg-image" src="assets/images/waking_up.png" alt="아침 방 배경">
@@ -514,7 +553,7 @@
       </div>
     </div>
 
-    <section id="screen-eve-prep" class="screen" aria-label="전날 준비 화면">
+    <section id="screen-eve-prep" class="screen screen-s006 screen-s008" aria-label="전날 준비 화면">
       <div class="eve-prep-fullscreen">
         <div class="eve-bg-layer">
           <img id="eve-bg-image" src="assets/images/waking_up.png" alt="전날 준비 배경" style="filter: brightness(0.4);">
@@ -557,6 +596,7 @@
 
             <div class="eve-bag-game__play">
               <aside class="eve-bag-game__player">
+                <div id="eve-bag-player-avatar" class="eve-bag-game__avatar" aria-hidden="true">🧑</div>
                 <div class="eve-bag-game__speech">
                   <strong>내일 필요한 걸<br>미리 챙겨볼까요?</strong>
                   <span id="eve-bag-coach-text">물건을 골라 가방에 넣어요.</span>
@@ -603,7 +643,7 @@
                   <span class="desk-item-label">우산</span>
                 </div>
                 <div class="desk-item draggable-item eve-item" draggable="true" data-item="handFan">
-                  <div class="emoji-icon">🪭</div>
+                  <img src="assets/images/item_hand_fan.svg" alt="손선풍기" draggable="false">
                   <span class="desk-item-label">손선풍기</span>
                 </div>
                 <div class="desk-item draggable-item eve-item" draggable="true" data-item="gloves">
@@ -660,11 +700,11 @@
             <img class="eve-alarm-game__scene" src="assets/images/alarm-setting-evening.png" alt="잠옷을 입은 캐릭터가 침대 옆에서 알람 시간을 생각하는 모습">
             <div class="eve-alarm-game__shade" aria-hidden="true"></div>
             <header class="eve-alarm-game__header">
-              <span>⭐ 내일 아침 미션</span>
+              <span>🌙 전날 준비</span>
               <strong>알람을 맞춰요</strong>
             </header>
             <div class="eve-alarm-game__speech">
-              <h3>몇 시에 일어날까요?</h3>
+              <h3>몇 시에<br>일어나야 할까?</h3>
               <p>출근 시간을 생각해서 알람을 맞춰요!</p>
             </div>
             <div id="eve-alarm-options" class="eve-alarm-game__controls"></div>
@@ -685,7 +725,7 @@
       </div>
     </div>
 
-    <section id="screen-commute" class="screen" aria-label="출근 이동 화면">
+    <section id="screen-commute" class="screen screen-s018" aria-label="출근 이동 화면">
       <div class="commute-container">
         <div class="commute-header">
           <span class="commute-header__icon">🚌</span>
@@ -781,7 +821,7 @@
       </div>
     </div>
 
-    <section id="screen-result" class="screen" aria-label="결과 화면">
+    <section id="screen-result" class="screen screen-s020" aria-label="결과 화면">
       <div id="result-container" class="result-container-simple">
         <div class="result-main-card" aria-live="polite">
           <header class="result-top-hud">
@@ -908,7 +948,7 @@
       </div>
     </section>
 
-    <section id="screen-report" class="screen" aria-label="교사용 보고서 화면">
+    <section id="screen-report" class="screen screen-s021" aria-label="교사용 보고서 화면">
       <div class="report-container report-dashboard-shell">
         <header class="report-dashboard-header">
           <button id="btn-report-back" class="btn-back report-back-button" aria-label="이전 화면으로">← 이전 화면으로</button>
@@ -952,7 +992,7 @@
       </div>
     </section>
 
-    <section id="screen-admin" class="screen" aria-label="교사용 학생 관리 화면">
+    <section id="screen-admin" class="screen screen-s021" aria-label="교사용 학생 관리 화면">
       <div class="admin-container">
         <div class="admin-header">
           <h2 class="admin-header__title">학생 관리</h2>
