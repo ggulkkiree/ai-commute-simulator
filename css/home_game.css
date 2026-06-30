@@ -537,3 +537,185 @@
     font-size: .9rem;
   }
 }
+
+/* ============================================================
+   Student game responsive viewport stabilization
+   Use the full browser viewport; keep 16:9 only as a layout reference.
+   ============================================================ */
+body {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+#app-container {
+  width: 100vw;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  max-height: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  aspect-ratio: auto;
+  overflow: hidden;
+  position: relative;
+  background: var(--color-bg);
+  box-shadow: none;
+}
+
+body.has-top-bar #app-container,
+body:has(#screen-briefing.active) #app-container,
+body:has(#screen-ai-plan.active) #app-container,
+body:has(#screen-morning-prep.active) #app-container,
+body:has(#screen-commute.active) #app-container {
+  padding: 0;
+}
+
+#app-container > .screen {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  overflow: hidden;
+}
+
+#app-container > .screen.active {
+  display: flex;
+}
+
+#app-container > #screen-main.active,
+#app-container > #screen-morning-prep.active {
+  display: block;
+}
+
+#app-container > #screen-planning.active,
+#app-container > #screen-briefing.active,
+#app-container > #screen-duty-intro.active,
+#app-container > #screen-eve-prep.active,
+#app-container > #screen-morning-alarm.active,
+#app-container > #screen-commute.active,
+#app-container > #screen-result.active {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+#screen-main.active,
+#screen-ai-plan.active,
+#screen-eve-prep.active,
+#screen-morning-prep.active,
+#screen-commute.active,
+#screen-result.active {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+}
+
+#screen-main.active,
+#screen-morning-prep.active,
+#screen-eve-prep.active,
+#screen-commute.active {
+  background-clip: padding-box;
+}
+
+.morning-game,
+.morning-prep-fullscreen,
+.eve-prep-fullscreen,
+#screen-briefing .route-mission,
+#screen-ai-plan .ai-plan,
+#screen-commute .commute-container,
+#screen-commute .commute-container[data-commute-mode],
+#screen-commute .commute-walkmap-reference {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.planning-container,
+.briefing-container,
+.duty-intro-container,
+.eve-prep-container,
+.morning-alarm-container,
+.commute-container,
+#screen-result .result-container-simple {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#screen-result .result-container-simple,
+#screen-result .result-main-card {
+  height: 100%;
+}
+
+#screen-ai-plan .ai-plan__footer {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+#screen-ai-plan .ai-plan__result-actions,
+#screen-ai-plan #ai-plan-result .ai-plan__result-actions {
+  position: fixed;
+  right: auto;
+  bottom: 0;
+  left: 50%;
+  width: min(860px, calc(100vw - 48px));
+  transform: translateX(-50%);
+}
+
+#screen-commute .commute-container:not([data-commute-mode]) {
+  width: min(1720px, calc(100vw - 52px));
+  height: min(980px, calc(100dvh - 40px));
+}
+
+#screen-result.active {
+  padding-left: clamp(20px, 3.2%, 60px);
+  padding-right: clamp(20px, 3.2%, 60px);
+}
+
+.scenario-container--vn,
+.vn-background-layer,
+.scenario-bg-image {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@media (min-aspect-ratio: 16 / 9) {
+  #screen-main .home-student-board {
+    width: min(78vw, 1500px);
+  }
+
+  #screen-ai-plan .ai-plan,
+  #screen-briefing .route-mission,
+  .morning-game,
+  #screen-commute .commute-container[data-commute-mode],
+  #screen-result .result-main-card {
+    container-type: size;
+  }
+}
+
+@media (max-aspect-ratio: 16 / 9) {
+  #screen-main .home-student-board {
+    width: min(86vw, 1280px);
+  }
+
+  #screen-ai-plan .ai-plan__header,
+  .morning-game__top-hud,
+  #screen-result .result-top-hud {
+    gap: clamp(8px, 1.1vw, 18px);
+  }
+}

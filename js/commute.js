@@ -667,34 +667,37 @@
     var destinations = getBusInfo().destinations || [];
     var level = getLevel();
     commuteState.stage = 'destination';
+    setCommuteGameMode('destination-map');
     setFeedback('');
     setStatus('🗺️',
       level === '다' ? '본앤하이리로 걸어가요.' : '본앤하이리는 어디에 있을까요?',
       level === '가' ? '미니 지도에서 목적지를 선택해요.' : '간판을 보고 본앤하이리를 찾아요.');
 
     if (level === '다') {
-      setScene('<div class="commute-mini-map commute-mini-map--simple">' +
-        '<div class="commute-map-place commute-map-place--correct">🏢<strong>본앤하이리</strong></div>' +
+      setScene('<div class="commute-walkmap-reference" aria-label="회사 위치를 찾는 지도">' +
+        '<button type="button" class="commute-map-hotspot commute-map-hotspot--bonhiri" data-destination="bonhiri" aria-label="본앤하이리"></button>' +
+        '<button type="button" class="commute-map-hotspot commute-map-hotspot--park" data-destination="park" aria-label="동네 공원"></button>' +
+        '<button type="button" class="commute-map-hotspot commute-map-hotspot--store" data-destination="store" aria-label="편의점"></button>' +
       '</div>');
-      setActions([{
-        label: '본앤하이리로 걸어가기',
-        primary: true,
-        onClick: function() { handleDestinationChoice(destinations[0]); }
-      }]);
+      setActions([]);
+      dom.scene.querySelectorAll('[data-destination]').forEach(function(button) {
+        button.addEventListener('click', function() {
+          var id = button.getAttribute('data-destination');
+          var selected = destinations.find(function(destination) {
+            return destination.id === id;
+          });
+          handleDestinationChoice(selected);
+        });
+      });
       if (typeof speak === 'function') speak('본앤하이리로 걸어가요.');
       return;
     }
 
-    var options = level === '가'
-      ? destinations
-      : destinations.filter(function(destination) {
-          return destination.correct || destination.id === 'store';
-        });
-    setScene('<div class="commute-mini-map">' +
-      options.map(function(destination) {
-        return '<button type="button" class="commute-map-place" data-destination="' +
-          destination.id + '">' + destination.icon +
-          '<strong>' + destination.name + '</strong></button>';
+    setScene('<div class="commute-walkmap-reference" aria-label="회사 위치를 찾는 지도">' +
+      destinations.map(function(destination) {
+        return '<button type="button" class="commute-map-hotspot commute-map-hotspot--' +
+          destination.id + '" data-destination="' + destination.id + '" aria-label="' +
+          destination.name + '"></button>';
       }).join('') +
     '</div>');
     setActions([]);
@@ -733,6 +736,7 @@
     }
 
     record.selectedDestinationCorrectly = true;
+    setCommuteGameMode('');
     setFeedback('본앤하이리를 찾았어요.', 'success');
     setStatus('🚶', '본앤하이리까지 걸어가요.',
       '정류장에서 회사까지 ' + commuteConfig.walkToWorkMinutes + '분 걸려요.');
